@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cambrian NPDES Pipeline — Data Guide for BDRs (V12)</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --blue: #2563eb; --blue-light: #dbeafe; --blue-dark: #1e40af;
+    --green: #16a34a; --green-light: #dcfce7;
+    --orange: #ea580c; --orange-light: #fff7ed;
+    --red: #dc2626; --red-light: #fef2f2;
+    --purple: #7c3aed; --purple-light: #f5f3ff;
+    --gray: #6b7280; --gray-light: #f9fafb; --gray-border: #e5e7eb;
+    --bg: #f8fafc; --card: #ffffff; --text: #1e293b; --text-muted: #64748b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+  .header { background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%); color: white; padding: 48px 32px; text-align: center; }
+  .header h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 8px; }
+  .header .subtitle { font-size: 1.1rem; opacity: 0.85; max-width: 700px; margin: 0 auto; }
+  .header .badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 4px 16px; border-radius: 20px; font-size: 0.85rem; margin-top: 16px; }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+
+  .toc { background: var(--card); border: 1px solid var(--gray-border); border-radius: 12px; padding: 24px 32px; margin-bottom: 32px; }
+  .toc h2 { font-size: 1.1rem; color: var(--blue-dark); margin-bottom: 12px; }
+  .toc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 8px; }
+  .toc a { color: var(--blue); text-decoration: none; font-size: 0.95rem; display: block; padding: 4px 0; }
+  .toc a:hover { text-decoration: underline; }
+  .toc .num { color: var(--gray); font-weight: 600; margin-right: 6px; }
+
+  .section { background: var(--card); border: 1px solid var(--gray-border); border-radius: 12px; padding: 32px; margin-bottom: 24px; }
+  .section h2 { font-size: 1.4rem; font-weight: 700; color: var(--blue-dark); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid var(--blue-light); }
+  .section h3 { font-size: 1.1rem; font-weight: 600; color: var(--text); margin: 20px 0 10px; }
+  .section p { margin-bottom: 12px; color: var(--text); }
+  .section ul, .section ol { margin: 8px 0 16px 24px; }
+  .section li { margin-bottom: 6px; }
+
+  .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin: 20px 0; }
+  .stat-card { background: var(--gray-light); border-radius: 10px; padding: 16px 20px; text-align: center; }
+  .stat-card .number { font-size: 1.8rem; font-weight: 800; color: var(--blue); }
+  .stat-card .label { font-size: 0.82rem; color: var(--text-muted); margin-top: 4px; }
+  .stat-card.green .number { color: var(--green); }
+  .stat-card.orange .number { color: var(--orange); }
+  .stat-card.red .number { color: var(--red); }
+  .stat-card.purple .number { color: var(--purple); }
+
+  .flow-diagram { background: var(--gray-light); border-radius: 10px; padding: 24px; margin: 20px 0; overflow-x: auto; }
+  .flow-steps { display: flex; align-items: center; gap: 0; flex-wrap: wrap; justify-content: center; }
+  .flow-step { background: white; border: 2px solid var(--blue); border-radius: 10px; padding: 12px 16px; min-width: 140px; text-align: center; }
+  .flow-step .step-num { font-size: 0.75rem; color: var(--blue); font-weight: 700; text-transform: uppercase; }
+  .flow-step .step-title { font-size: 0.9rem; font-weight: 600; margin-top: 2px; }
+  .flow-step .step-detail { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+  .flow-arrow { font-size: 1.5rem; color: var(--blue); padding: 0 8px; flex-shrink: 0; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 16px 0; }
+  @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+
+  .chart-container { position: relative; height: 280px; margin: 16px 0; }
+  .chart-container.tall { height: 350px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.9rem; }
+  th { background: var(--blue); color: white; padding: 10px 14px; text-align: left; font-weight: 600; }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--gray-border); }
+  tr:hover { background: var(--blue-light); }
+
+  .badge-inline { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.78rem; font-weight: 600; }
+  .badge-green { background: var(--green-light); color: var(--green); }
+  .badge-orange { background: var(--orange-light); color: var(--orange); }
+  .badge-red { background: var(--red-light); color: var(--red); }
+  .badge-blue { background: var(--blue-light); color: var(--blue); }
+  .badge-purple { background: var(--purple-light); color: var(--purple); }
+  .badge-gray { background: #f1f5f9; color: var(--gray); }
+
+  .callout { border-left: 4px solid var(--blue); background: var(--blue-light); padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 16px 0; }
+  .callout.green { border-color: var(--green); background: var(--green-light); }
+  .callout.orange { border-color: var(--orange); background: var(--orange-light); }
+  .callout.red { border-color: var(--red); background: var(--red-light); }
+  .callout strong { display: block; margin-bottom: 4px; }
+
+  .scoring-bar { display: flex; align-items: center; margin: 6px 0; }
+  .scoring-bar .bar-label { width: 160px; font-size: 0.85rem; font-weight: 500; flex-shrink: 0; }
+  .scoring-bar .bar-track { flex: 1; height: 22px; background: #e2e8f0; border-radius: 11px; overflow: hidden; position: relative; }
+  .scoring-bar .bar-fill { height: 100%; border-radius: 11px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; font-size: 0.72rem; color: white; font-weight: 700; }
+  .scoring-bar .bar-max { width: 50px; text-align: right; font-size: 0.78rem; color: var(--text-muted); flex-shrink: 0; margin-left: 8px; }
+
+  .gate-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 16px 0; }
+  .gate-card { border-radius: 12px; padding: 20px; text-align: center; }
+  .gate-card.g1 { background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border: 2px solid var(--green); }
+  .gate-card.g2 { background: linear-gradient(135deg, var(--blue-light) 0%, #bfdbfe 100%); border: 2px solid var(--blue); }
+  .gate-card.g3 { background: linear-gradient(135deg, var(--orange-light) 0%, #fed7aa 100%); border: 2px solid var(--orange); }
+  .gate-card .gate-num { font-size: 2rem; font-weight: 800; }
+  .gate-card .gate-label { font-weight: 700; font-size: 1rem; margin: 4px 0; }
+  .gate-card .gate-desc { font-size: 0.82rem; color: var(--text-muted); }
+  .gate-card .gate-count { font-size: 0.9rem; font-weight: 600; margin-top: 8px; }
+
+  .cascade-box { background: var(--gray-light); border-radius: 8px; padding: 16px; margin: 8px 0; }
+  .cascade-step { display: flex; align-items: center; gap: 10px; padding: 6px 0; }
+  .cascade-num { width: 28px; height: 28px; background: var(--blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
+  .cascade-text { font-size: 0.88rem; }
+  .cascade-arrow { text-align: center; color: var(--gray); font-size: 0.8rem; padding: 2px 0; margin-left: 9px; }
+
+  .footer { text-align: center; padding: 32px; color: var(--text-muted); font-size: 0.85rem; }
+
+  .highlight { background: #fef9c3; padding: 1px 6px; border-radius: 3px; }
+  code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; font-family: 'SF Mono', Monaco, monospace; }
+
+  .call-script-example { background: #f0fdf4; border: 2px solid var(--green); border-radius: 10px; padding: 24px; margin: 16px 0; font-size: 0.9rem; line-height: 1.7; }
+  .call-script-example .example-label { font-size: 0.8rem; font-weight: 700; color: var(--green); text-transform: uppercase; margin-bottom: 8px; }
+
+  .bdr-action-table td:first-child { font-weight: 600; white-space: nowrap; }
+
+  @media (max-width: 768px) {
+    .gate-cards { grid-template-columns: 1fr; }
+    .stat-row { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Cambrian NPDES Leads Pipeline</h1>
+  <p class="subtitle">A complete guide to understanding the data — where it comes from, how it's scored, and how to use it for outreach. Every facility has a pre-built <code style="background:rgba(255,255,255,0.2);color:white;">bdr_call_script</code> research brief.</p>
+  <span class="badge">Pipeline V12 &nbsp;&middot;&nbsp; February 2026 &nbsp;&middot;&nbsp; 1,148,393 facilities</span>
+</div>
+
+<div class="container">
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+  <h2>Quick Navigation</h2>
+  <div class="toc-grid">
+    <a href="#overview"><span class="num">1.</span> What Is This Data?</a>
+    <a href="#numbers"><span class="num">2.</span> The Numbers at a Glance</a>
+    <a href="#sources"><span class="num">3.</span> Data Sources — Where It Comes From</a>
+    <a href="#pipeline"><span class="num">4.</span> The 10-Phase Pipeline</a>
+    <a href="#join"><span class="num">5.</span> How Records Are Joined</a>
+    <a href="#scoring"><span class="num">6.</span> Lead Scoring (0-100)</a>
+    <a href="#gates"><span class="num">7.</span> Gates — Priority Tiers</a>
+    <a href="#capex"><span class="num">8.</span> CapEx Qualification</a>
+    <a href="#contacts"><span class="num">9.</span> Contact Data</a>
+    <a href="#signals"><span class="num">10.</span> Sandler Outreach Signals</a>
+    <a href="#territories"><span class="num">11.</span> Territories &amp; Reps</a>
+    <a href="#segments"><span class="num">12.</span> Segment Tables &amp; BDR Action Lists</a>
+    <a href="#fields"><span class="num">13.</span> Important Fields Reference</a>
+    <a href="#playbook"><span class="num">14.</span> Sandler BDR Playbook</a>
+    <a href="#faq"><span class="num">15.</span> FAQ</a>
+    <a href="#dictionary"><span class="num">16.</span> Data Dictionary / Column Legend</a>
+  </div>
+</div>
+
+<!-- 1. OVERVIEW -->
+<div class="section" id="overview">
+  <h2>1. What Is This Data?</h2>
+  <p>The Cambrian NPDES Leads Pipeline is a <strong>unified database of 1,148,393 US regulated wastewater facilities</strong> that have been scored, ranked, and enriched specifically for Cambrian sales outreach. Every facility in this list holds an EPA NPDES permit and/or files Toxics Release Inventory (TRI) reports — meaning they are potential customers for Cambrian's treatment technology.</p>
+  <p>The data combines <strong>9 federal and commercial data sources</strong>, verified market intelligence, and proprietary scoring to answer one question: <em>"Which facilities have the strongest business case for Cambrian's treatment system?"</em></p>
+  <p>The pipeline exports <strong>197 columns per facility</strong> across <strong>34 segment CSVs</strong> (20 territory/master segments + 14 BDR action lists). Every single facility has a pre-built <code>bdr_call_script</code> — a Sandler-methodology research brief with facility context, contacts, compliance signals, and discovery questions ready for outreach.</p>
+
+  <div class="callout green">
+    <strong>Why should you trust this data?</strong>
+    Every record traces back to official EPA permit, violation, inspection, and enforcement data. Flow numbers come from actual Discharge Monitoring Reports filed with the EPA. Market rates are researcher-verified from 148 utility districts across 42 states. Scores are formula-driven, not subjective. V12 adds FRS NAICS/SIC codes, mailing addresses, enforcement dollar breakdowns, and alternative facility names.
+  </div>
+</div>
+
+<!-- 2. NUMBERS AT A GLANCE -->
+<div class="section" id="numbers">
+  <h2>2. The Numbers at a Glance</h2>
+
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="number">1,148,393</div>
+      <div class="label">Total Facilities in DuckDB</div>
+    </div>
+    <div class="stat-card green">
+      <div class="number">34,819</div>
+      <div class="label">Food &amp; Beverage Facilities</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="number">197</div>
+      <div class="label">Export Columns per CSV</div>
+    </div>
+    <div class="stat-card purple">
+      <div class="number">68</div>
+      <div class="label">States + Territories</div>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-card green">
+      <div class="number">14,763</div>
+      <div class="label">Gate 1 (Hot Leads)</div>
+    </div>
+    <div class="stat-card">
+      <div class="number">16,440</div>
+      <div class="label">Gate 2 (Warm Leads)</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="number">72,025</div>
+      <div class="label">Gate 3 (Developing)</div>
+    </div>
+    <div class="stat-card purple">
+      <div class="number">34</div>
+      <div class="label">Segment CSVs</div>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-card red">
+      <div class="number">63,026</div>
+      <div class="label">SNC Facilities</div>
+    </div>
+    <div class="stat-card">
+      <div class="number">34,994</div>
+      <div class="label">Federal Enforcement Cases</div>
+    </div>
+    <div class="stat-card green">
+      <div class="number">8,673</div>
+      <div class="label">CapEx Qualified</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="number">2,493</div>
+      <div class="label">CapEx Near-Qualified</div>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="number">344,207</div>
+      <div class="label">Contact Emails Resolved</div>
+    </div>
+    <div class="stat-card green">
+      <div class="number">450,246</div>
+      <div class="label">Contact Names Resolved</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="number">93,047</div>
+      <div class="label">Permits Expiring 12m</div>
+    </div>
+    <div class="stat-card purple">
+      <div class="number">619,085</div>
+      <div class="label">Hot Zone Facilities</div>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="number">852,159</div>
+      <div class="label">Total Flow (MGD)</div>
+    </div>
+    <div class="stat-card green">
+      <div class="number">212,603</div>
+      <div class="label">Parent Companies</div>
+    </div>
+    <div class="stat-card purple">
+      <div class="number">14</div>
+      <div class="label">BDR Action Lists</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="number">385</div>
+      <div class="label">DuckDB Internal Columns</div>
+    </div>
+  </div>
+</div>
+
+<!-- 3. DATA SOURCES -->
+<div class="section" id="sources">
+  <h2>3. Data Sources — Where It Comes From</h2>
+  <p>Every field in the pipeline traces back to one of these official or proprietary sources:</p>
+
+  <table>
+    <thead>
+      <tr><th>#</th><th>Source</th><th>What It Provides</th><th>Records</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><strong>EPA NPDES (ECHO/ICIS)</strong><br><span style="color:var(--text-muted);font-size:0.8rem">Integrated Compliance Information System</span></td>
+        <td>Permits, facility names, addresses, permit status, design flow, SIC/NAICS codes, major/minor classification, compliance status, DMR flow data, violations, inspections</td>
+        <td>~500K permits</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>EPA FRS</strong><br><span style="color:var(--text-muted);font-size:0.8rem">Facility Registry Service</span></td>
+        <td>Facility identity, lat/lon, <strong>contacts</strong> (names/emails/phones/titles), org type, parent company, DUNS numbers, tribal/federal flags, HUC codes, congressional districts. <span class="badge-inline badge-blue">V12</span> NAICS/SIC codes, mailing addresses, alternative facility names</td>
+        <td>~1.1M facilities</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>EPA TRI</strong><br><span style="color:var(--text-muted);font-size:0.8rem">Toxics Release Inventory</span></td>
+        <td>Waste volumes, parent companies, contacts, P2/source reduction activities, waste streams, POTW transfers</td>
+        <td>~80K annual filers</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>EPA CASE (FE&amp;C)</strong><br><span style="color:var(--text-muted);font-size:0.8rem">Federal Enforcement &amp; Compliance</span></td>
+        <td>Case details, penalty amounts, pollutant lists, case status. <span class="badge-inline badge-blue">V12</span> federal/state/SEP/compliance cost breakdowns</td>
+        <td>~35K active cases</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><strong>WRI Aqueduct</strong><br><span style="color:var(--text-muted);font-size:0.8rem">World Resources Institute</span></td>
+        <td>Baseline water stress scores, future projections, seasonal variability</td>
+        <td>~1.1M matched</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td><strong>HydroWASTE</strong><br><span style="color:var(--text-muted);font-size:0.8rem">WWTP Matching Database</span></td>
+        <td>WWTP matching, treatment level, capacity utilization, coastal proximity</td>
+        <td>~17K WWTPs</td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td><strong>Data Enrichment</strong><br><span style="color:var(--text-muted);font-size:0.8rem">Apollo / ZoomInfo</span></td>
+        <td>Contacts, firmographics, company data for facilities found through prospecting tools</td>
+        <td>~5K matched</td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td><strong>Market Intelligence</strong><br><span style="color:var(--text-muted);font-size:0.8rem">Cambrian Proprietary (40+ CSVs)</span></td>
+        <td>Water rates (148 utilities), surcharges, state regulatory profiles, hot zones, buyer archetypes, GTM plays, Chesapeake Bay watershed flags</td>
+        <td>148 utilities + 14 states</td>
+      </tr>
+      <tr>
+        <td>9</td>
+        <td><strong>FRS National Single</strong> <span class="badge-inline badge-blue">V12</span><br><span style="color:var(--text-muted);font-size:0.8rem">EPA FRS National Download</span></td>
+        <td>Interest types, program system acronyms, US-Mexico border indicator</td>
+        <td>~1.1M records</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 4. THE 10-PHASE PIPELINE -->
+<div class="section" id="pipeline">
+  <h2>4. The 10-Phase Pipeline</h2>
+  <p>The pipeline runs in 10 sequential phases, each adding more data and intelligence:</p>
+
+  <div class="flow-diagram">
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="step-num">Phase 1</div>
+        <div class="step-title">Ingest Sources</div>
+        <div class="step-detail">1.15M NPDES permits + FRS + TRI + Aqueduct + HydroWASTE</div>
+      </div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">
+        <div class="step-num">Phase 2</div>
+        <div class="step-title">FRS Bridge + Industry</div>
+        <div class="step-detail">Cross-ref IDs, NAICS/SIC backfill <span class="badge-inline badge-blue">V12</span></div>
+      </div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">
+        <div class="step-num">Phase 3</div>
+        <div class="step-title">Compliance</div>
+        <div class="step-detail">SNC, violations, enforcement</div>
+      </div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">
+        <div class="step-num">Phase 4</div>
+        <div class="step-title">Contacts + Enrich</div>
+        <div class="step-detail">3-source cascade + mailing addr <span class="badge-inline badge-blue">V12</span></div>
+      </div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">
+        <div class="step-num">Phase 5</div>
+        <div class="step-title">Flow Resolution</div>
+        <div class="step-detail">6-source flow cascade</div>
+      </div>
+    </div>
+    <div style="height:16px"></div>
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="step-num">Phase 6</div>
+        <div class="step-title">Market Intel</div>
+        <div class="step-detail">Rates, regs, water stress</div>
+      </div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">
+        <div class="step-num">Phase 7</div>
+        <div class="step-title">Enforcement Detail</div>
+        <div class="step-detail">Cases + $ breakdowns <span class="badge-inline badge-blue">V12</span></div>
+      </div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">
+        <div class="step-num">Phase 8</div>
+        <div class="step-title">Scoring &amp; Gating</div>
+        <div class="step-detail">0-100 score, gates, CapEx</div>
+      </div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">
+        <div class="step-num">Phase 9</div>
+        <div class="step-title">Summaries + BDR</div>
+        <div class="step-detail">HubSpot match + call scripts</div>
+      </div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">
+        <div class="step-num">Phase 10</div>
+        <div class="step-title">Export</div>
+        <div class="step-detail">34 CSVs + Supabase</div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Phase Details</h3>
+  <table>
+    <thead><tr><th>Phase</th><th>Name</th><th>What Happens</th></tr></thead>
+    <tbody>
+      <tr><td><strong>1</strong></td><td>Ingest Raw Sources</td><td>Load raw CSV/TSV files from EPA downloads into DuckDB staging tables. Sources: ICIS permits, ICIS compliance, DMR flow, FRS facility, FRS contacts, TRI releases, TRI parent companies, Aqueduct scores, HydroWASTE.</td></tr>
+      <tr><td><strong>2</strong></td><td>FRS Master Join + Industry</td><td>Join FRS facility data with NPDES permits. Resolve industry codes: primary NAICS from ICIS, backfilled with <span class="badge-inline badge-blue">FRS NAICS (V12)</span> and SIC codes. Flag F&amp;B, Cambrian target industries, and excluded industries.</td></tr>
+      <tr><td><strong>3</strong></td><td>Compliance &amp; Enforcement</td><td>Build compliance profile: SNC status, violation counts (effluent, compliance schedule, permit schedule, single event), enforcement actions, inspection counts, effluent exceedance percentages.</td></tr>
+      <tr><td><strong>4</strong></td><td>Contact Resolution + Enrichment</td><td>Merge contacts from 3 sources (FRS, TRI, Enrichment) via COALESCE cascade. <span class="badge-inline badge-blue">V12</span> adds FRS mailing addresses and alternative facility names.</td></tr>
+      <tr><td><strong>5</strong></td><td>Flow Resolution</td><td>Build composite flow from 6 sources: DMR actual &rarr; DMR max &rarr; ICIS actual avg &rarr; ICIS design &rarr; general permit design &rarr; enrichment flow.</td></tr>
+      <tr><td><strong>6</strong></td><td>Market Intelligence Overlay</td><td>Join verified water rates (148 utilities), surcharge evidence, hot zone designations, state regulatory profiles, Chesapeake Bay watershed flags.</td></tr>
+      <tr><td><strong>7</strong></td><td>Enforcement Case Detail</td><td>Join EPA CASE data: status, total penalties, pollutant lists. <span class="badge-inline badge-blue">V12</span> adds federal penalty, state penalty, SEP costs, and compliance action costs.</td></tr>
+      <tr><td><strong>8</strong></td><td>Scoring &amp; Gating</td><td>Calculate composite lead score (0-100) from 6 core components + 5 bonus multipliers. Assign gates (1/2/3). Run CapEx qualification formula.</td></tr>
+      <tr><td><strong>9</strong></td><td>Summary Generation</td><td>Generate <code>cambrian_fit_summary</code> per facility. Assign territories and BDR reps. Match against HubSpot active deals. Generate <code>bdr_call_script</code> per facility.</td></tr>
+      <tr><td><strong>10</strong></td><td>Export &amp; Segmentation</td><td>Export 197 columns across 34 CSV segments (20 territory/master + 14 BDR action lists). Apply quality filters. Sort by lead_score DESC.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>Runtime:</strong> The full pipeline processes 1.15 million facilities end-to-end inside DuckDB (an in-memory analytics database) for speed. V12 adds FRS NAICS/SIC backfill, mailing address enrichment, enforcement dollar breakdowns, and alternative facility names.
+  </div>
+</div>
+
+<!-- 5. JOIN LOGIC -->
+<div class="section" id="join">
+  <h2>5. How Records Are Joined</h2>
+  <p>A single facility can appear in multiple EPA databases under different IDs. Here is how we link them together:</p>
+
+  <div class="two-col">
+    <div>
+      <h3>Primary Key: <code>lead_id</code></h3>
+      <p>Every lead gets a unique ID based on its source:</p>
+      <ul>
+        <li><code>NPDES_TX0068021</code> — from NPDES permit</li>
+        <li><code>FRS_110034504757</code> — from FRS registry</li>
+        <li><code>ENRICH_0042</code> — from data enrichment only</li>
+      </ul>
+
+      <h3>Join Chain</h3>
+      <div class="cascade-box">
+        <div class="cascade-step"><div class="cascade-num">1</div><div class="cascade-text"><strong>NPDES permit ID</strong> &rarr; links to ICIS violations, DMR, limits, enforcement</div></div>
+        <div class="cascade-arrow">&darr;</div>
+        <div class="cascade-step"><div class="cascade-num">2</div><div class="cascade-text"><strong>FRS Registry ID</strong> &rarr; links NPDES to FRS contacts, orgs, parent companies, NAICS/SIC <span class="badge-inline badge-blue">V12</span></div></div>
+        <div class="cascade-arrow">&darr;</div>
+        <div class="cascade-step"><div class="cascade-num">3</div><div class="cascade-text"><strong>FRS ID &rarr; TRI ID</strong> &rarr; links to TRI chemical data, TRI contacts</div></div>
+        <div class="cascade-arrow">&darr;</div>
+        <div class="cascade-step"><div class="cascade-num">4</div><div class="cascade-text"><strong>State code</strong> &rarr; links to market intelligence, rates, regulatory tiers</div></div>
+        <div class="cascade-arrow">&darr;</div>
+        <div class="cascade-step"><div class="cascade-num">5</div><div class="cascade-text"><strong>Lat/Lon</strong> &rarr; links to WRI Aqueduct water stress, HydroWASTE, hot zones, EJ data</div></div>
+      </div>
+    </div>
+
+    <div>
+      <h3>Data Resolution Cascades</h3>
+      <p>When multiple sources have the same data point, we pick the best one:</p>
+
+      <h3>Flow (MGD)</h3>
+      <div class="cascade-box">
+        <div class="cascade-step"><div class="cascade-num">1</div><div class="cascade-text">DMR actual average flow <span class="badge-inline badge-green">highest confidence</span></div></div>
+        <div class="cascade-arrow">&darr; fallback</div>
+        <div class="cascade-step"><div class="cascade-num">2</div><div class="cascade-text">ICIS actual average / design flow</div></div>
+        <div class="cascade-arrow">&darr; fallback</div>
+        <div class="cascade-step"><div class="cascade-num">3</div><div class="cascade-text">DMR max flow / general permit design</div></div>
+        <div class="cascade-arrow">&darr; fallback</div>
+        <div class="cascade-step"><div class="cascade-num">4</div><div class="cascade-text">Outfall / enrichment flow <span class="badge-inline badge-orange">lower confidence</span></div></div>
+      </div>
+
+      <h3>Contact Info</h3>
+      <div class="cascade-box">
+        <div class="cascade-step"><div class="cascade-num">1</div><div class="cascade-text">FRS National Contacts <span class="badge-inline badge-green">best source (435K+)</span></div></div>
+        <div class="cascade-arrow">&darr; fallback</div>
+        <div class="cascade-step"><div class="cascade-num">2</div><div class="cascade-text">Data Enrichment (Apollo/ZoomInfo)</div></div>
+        <div class="cascade-arrow">&darr; fallback</div>
+        <div class="cascade-step"><div class="cascade-num">3</div><div class="cascade-text">TRI annual report contacts</div></div>
+      </div>
+
+      <h3>Industry Code (V12)</h3>
+      <div class="cascade-box">
+        <div class="cascade-step"><div class="cascade-num">1</div><div class="cascade-text">ICIS NAICS code <span class="badge-inline badge-green">primary</span></div></div>
+        <div class="cascade-arrow">&darr; fallback</div>
+        <div class="cascade-step"><div class="cascade-num">2</div><div class="cascade-text">FRS NAICS code <span class="badge-inline badge-blue">V12</span></div></div>
+        <div class="cascade-arrow">&darr; fallback</div>
+        <div class="cascade-step"><div class="cascade-num">3</div><div class="cascade-text">SIC crosswalk / TRI / Enrichment</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. SCORING -->
+<div class="section" id="scoring">
+  <h2>6. Lead Scoring (0-100)</h2>
+  <p>Every facility gets a composite lead score from 0 to 100. The score is built from <strong>6 core components</strong> + <strong>5 bonus multipliers</strong>. Higher = stronger Cambrian fit.</p>
+
+  <h3>Core Scoring Components (up to 85 points)</h3>
+  <div style="margin: 16px 0;">
+    <div class="scoring-bar">
+      <div class="bar-label">Flow Volume</div>
+      <div class="bar-track"><div class="bar-fill" style="width:29.4%;background:var(--blue);">25 pts</div></div>
+      <div class="bar-max">/ 25</div>
+    </div>
+    <div class="scoring-bar">
+      <div class="bar-label">Industry Fit</div>
+      <div class="bar-track"><div class="bar-fill" style="width:23.5%;background:var(--green);">20 pts</div></div>
+      <div class="bar-max">/ 20</div>
+    </div>
+    <div class="scoring-bar">
+      <div class="bar-label">Contaminant Mix</div>
+      <div class="bar-track"><div class="bar-fill" style="width:17.6%;background:var(--purple);">15 pts</div></div>
+      <div class="bar-max">/ 15</div>
+    </div>
+    <div class="scoring-bar">
+      <div class="bar-label">Compliance Risk</div>
+      <div class="bar-track"><div class="bar-fill" style="width:17.6%;background:var(--red);">15 pts</div></div>
+      <div class="bar-max">/ 15</div>
+    </div>
+    <div class="scoring-bar">
+      <div class="bar-label">Market Conditions</div>
+      <div class="bar-track"><div class="bar-fill" style="width:11.8%;background:var(--orange);">10 pts</div></div>
+      <div class="bar-max">/ 10</div>
+    </div>
+    <div class="scoring-bar">
+      <div class="bar-label">Regulatory Pressure</div>
+      <div class="bar-track"><div class="bar-fill" style="width:11.8%;background:#0ea5e9;">10 pts</div></div>
+      <div class="bar-max">/ 10</div>
+    </div>
+  </div>
+
+  <h3>Bonus Points (up to 17 additional)</h3>
+  <div style="margin: 16px 0;">
+    <div class="scoring-bar">
+      <div class="bar-label">CapEx Qualified</div>
+      <div class="bar-track"><div class="bar-fill" style="width:29.4%;background:#64748b;">5 pts</div></div>
+      <div class="bar-max">/ 5</div>
+    </div>
+    <div class="scoring-bar">
+      <div class="bar-label">POTW Dependent</div>
+      <div class="bar-track"><div class="bar-fill" style="width:17.6%;background:#64748b;">3 pts</div></div>
+      <div class="bar-max">/ 3</div>
+    </div>
+    <div class="scoring-bar">
+      <div class="bar-label">Enriched Data</div>
+      <div class="bar-track"><div class="bar-fill" style="width:17.6%;background:#64748b;">3 pts</div></div>
+      <div class="bar-max">/ 3</div>
+    </div>
+    <div class="scoring-bar">
+      <div class="bar-label">Openness Signals</div>
+      <div class="bar-track"><div class="bar-fill" style="width:17.6%;background:#64748b;">3 pts</div></div>
+      <div class="bar-max">/ 3</div>
+    </div>
+    <div class="scoring-bar">
+      <div class="bar-label">Has Contact</div>
+      <div class="bar-track"><div class="bar-fill" style="width:17.6%;background:#64748b;">3 pts</div></div>
+      <div class="bar-max">/ 3</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <h3>What drives each component?</h3>
+      <table>
+        <thead><tr><th>Component</th><th>Key Inputs</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Flow Volume</strong></td><td>Actual gallons discharged per day. More water = bigger revenue opportunity. Uses best-available from the flow cascade.</td></tr>
+          <tr><td><strong>Industry Fit</strong></td><td>NAICS/SIC code mapped to Cambrian target industry. F&amp;B, pharma, chemicals, mining, power, pulp &amp; paper all score high.</td></tr>
+          <tr><td><strong>Contaminant Mix</strong></td><td>Permit parameters: nutrients (N/P), organics (BOD/TSS), metals, toxicity, salinity. More complex = higher need.</td></tr>
+          <tr><td><strong>Compliance Risk</strong></td><td>Violations (24mo), SNC status, enforcement actions, penalties, QNCR noncompliance quarters.</td></tr>
+          <tr><td><strong>Market Conditions</strong></td><td>Water stress (WRI Aqueduct), high-cost water/sewer market, surcharge presence, hot zone status.</td></tr>
+          <tr><td><strong>Regulatory Pressure</strong></td><td>State regulatory stringency tier, pending changes, enforcement trends, Chesapeake Bay watershed.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <h3>Score Distribution</h3>
+      <div class="chart-container"><canvas id="scoreHistAll"></canvas></div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <h3>Avg Component Scores: All-Industry</h3>
+      <div class="chart-container"><canvas id="avgPtsAll"></canvas></div>
+    </div>
+    <div>
+      <h3>Avg Component Scores: F&amp;B</h3>
+      <div class="chart-container"><canvas id="avgPtsFb"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- 7. GATES -->
+<div class="section" id="gates">
+  <h2>7. Gates — Priority Tiers</h2>
+  <p>The lead score translates into a <strong>Gate</strong> — your shorthand for prioritization:</p>
+
+  <div class="gate-cards">
+    <div class="gate-card g1">
+      <div class="gate-num" style="color:var(--green);">Gate 1</div>
+      <div class="gate-label">Hot Leads</div>
+      <div class="gate-desc">Score 70+ — Ready for immediate outbound. Strong fit across multiple dimensions.</div>
+      <div class="gate-count">14,763 facilities</div>
+    </div>
+    <div class="gate-card g2">
+      <div class="gate-num" style="color:var(--blue);">Gate 2</div>
+      <div class="gate-label">Warm Leads</div>
+      <div class="gate-desc">Score 50-69 — Good prospects. May convert with the right trigger or nurture sequence.</div>
+      <div class="gate-count">16,440 facilities</div>
+    </div>
+    <div class="gate-card g3">
+      <div class="gate-num" style="color:var(--orange);">Gate 3</div>
+      <div class="gate-label">Developing</div>
+      <div class="gate-desc">Score 30-49 — Longer-term pipeline. Monitor for trigger events (permit renewal, enforcement).</div>
+      <div class="gate-count">72,025 facilities</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <h3>Gate Distribution</h3>
+      <div class="chart-container"><canvas id="gateChartAll"></canvas></div>
+    </div>
+    <div>
+      <h3>Gate Breakdown by Signal</h3>
+      <div class="chart-container"><canvas id="gateChartFb"></canvas></div>
+    </div>
+  </div>
+
+  <div class="callout green">
+    <strong>BDR Tip:</strong> Start with Gate 1 in your territory. Filter by <code>gate = 1</code> + your territory code. That is your hit list. The 14 BDR action lists (Section 12) give you pre-filtered sub-sets by outreach strategy.
+  </div>
+
+  <div class="callout">
+    <strong>Distribution note:</strong> The vast majority of the 1,148,393 facilities in DuckDB do not meet export filters (flow > 0, NPDES or TRI identified, quality filters passed). The ~252K exported rows are the subset that passed all quality gates.
+  </div>
+</div>
+
+<!-- 8. CAPEX -->
+<div class="section" id="capex">
+  <h2>8. CapEx Qualification — Does the Math Work?</h2>
+  <p>Every facility is evaluated on whether Cambrian's treatment system makes <em>financial</em> sense — not just technical sense. This is the <strong>CapEx qualification gate</strong>.</p>
+
+  <h3>What Is "Implied Growth CapEx"?</h3>
+  <p>The <code>implied_growth_capex</code> field answers: <strong>"How much annual economic value is flowing through this facility's wastewater system?"</strong></p>
+
+  <div class="callout">
+    <strong>Plain English:</strong> If a facility's implied growth CapEx is <strong>$11M</strong>, it means: "Based on how much water this plant discharges and what water costs in their market, there is roughly $11M of annual economic value at play — enough to justify a $7.5M+ treatment system with strong payback."
+  </div>
+
+  <h3>The Formula</h3>
+  <div style="background:var(--gray-light);border-radius:10px;padding:24px;margin:16px 0;">
+    <div style="font-size:1.05rem;font-weight:700;text-align:center;margin-bottom:16px;color:var(--blue-dark);">
+      Implied Growth CapEx = Flow (gal/day) &times; 365 days &times; Blended Rate ($/gal) &times; EBITDA Margin (60%) &times; IRR Multiple (7.0x)
+    </div>
+    <table>
+      <thead><tr><th style="width:25%">Input</th><th style="width:15%">Value</th><th>What It Means</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Flow (gal/day)</strong></td>
+          <td>from data</td>
+          <td>Best available daily wastewater discharge, converted from MGD to gallons.</td>
+        </tr>
+        <tr>
+          <td><strong>&times; 365</strong></td>
+          <td>365</td>
+          <td>Annualizes the daily flow.</td>
+        </tr>
+        <tr>
+          <td><strong>&times; Blended Rate ($/gal)</strong></td>
+          <td>from data</td>
+          <td>Combined water + sewer cost per gallon from verified 148-utility-district database.</td>
+        </tr>
+        <tr>
+          <td><strong>&times; EBITDA Margin</strong></td>
+          <td><strong>60%</strong></td>
+          <td>Conservative industry benchmark for treatment provider operating margin.</td>
+        </tr>
+        <tr>
+          <td><strong>&times; IRR Multiple</strong></td>
+          <td><strong>7.0x</strong></td>
+          <td>Conservative internal rate of return multiplier. Typical water infrastructure range: 7-12x.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Worked Example: Meat Processing Plant in Iowa</h3>
+  <div style="background:#f0fdf4;border:2px solid var(--green);border-radius:10px;padding:24px;margin:16px 0;">
+    <table style="margin:0;">
+      <thead><tr><th style="width:50%">Step</th><th>Calculation</th></tr></thead>
+      <tbody>
+        <tr><td>Flow: 0.8 MGD</td><td>0.8 &times; 1,000,000 = <strong>800,000 gal/day</strong></td></tr>
+        <tr><td>Annualize</td><td>800,000 &times; 365 = <strong>292,000,000 gal/year</strong></td></tr>
+        <tr><td>Blended rate: $0.013/gal (Iowa market)</td><td>292,000,000 &times; $0.013 = <strong>$3,796,000/year</strong></td></tr>
+        <tr><td>EBITDA margin: 60%</td><td>$3,796,000 &times; 0.60 = <strong>$2,277,600/year</strong></td></tr>
+        <tr><td>IRR multiple: 7.0x</td><td>$2,277,600 &times; 7.0 = <strong>$15,943,200</strong></td></tr>
+        <tr style="background:#dcfce7;"><td><strong>Implied Growth CapEx</strong></td><td><strong>$15.9M</strong> — well above $7.5M threshold &rarr; <span class="badge-inline badge-green">QUALIFIED</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Qualification Thresholds (V12)</h3>
+  <table>
+    <thead><tr><th>Status</th><th>Threshold</th><th>What It Means</th><th>Count</th></tr></thead>
+    <tbody>
+      <tr><td><span class="badge-inline badge-green">QUALIFIED</span></td><td>&ge; $7.5M</td><td>Strong economics. Prioritize for outbound.</td><td><strong>8,673</strong></td></tr>
+      <tr><td><span class="badge-inline badge-blue">NEAR_QUALIFIED</span></td><td>&ge; $5.25M (70%)</td><td>Close to threshold. A rate increase or flow discovery could tip it.</td><td><strong>2,493</strong></td></tr>
+      <tr><td><span class="badge-inline badge-orange">NOT_QUALIFIED</span></td><td>&lt; $5.25M</td><td>Economics do not support a Cambrian system yet at current inputs.</td><td>Remainder</td></tr>
+    </tbody>
+  </table>
+
+  <div class="two-col">
+    <div>
+      <h3>CapEx Distribution</h3>
+      <div class="chart-container"><canvas id="capexAll"></canvas></div>
+    </div>
+    <div>
+      <h3>Related Fields</h3>
+      <table>
+        <thead><tr><th>Field</th><th>What It Shows</th></tr></thead>
+        <tbody>
+          <tr><td><code>implied_growth_capex</code></td><td>Dollar value from the formula. Higher = more headroom.</td></tr>
+          <tr><td><code>capex_qualification_status</code></td><td>QUALIFIED / NEAR_QUALIFIED / NOT_QUALIFIED</td></tr>
+          <tr><td><code>required_rate_for_qualification</code></td><td>Min blended rate needed to qualify.</td></tr>
+          <tr><td><code>mr_blended_rate_per_gal</code></td><td>Blended water+sewer rate used in calculation.</td></tr>
+          <tr><td><code>flow_mgd</code></td><td>Flow value used in calculation.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="callout green">
+    <strong>Do NOT tell the prospect their implied growth CapEx number.</strong> It is a model input, not a quote. Use it to <em>qualify internally</em> whether the economics work before investing time in outreach.
+  </div>
+</div>
+
+<!-- 9. CONTACTS -->
+<div class="section" id="contacts">
+  <h2>9. Contact Data — Multi-Source Intelligence</h2>
+  <p>Contacts come from 3 sources, resolved through a priority cascade. The <code>contact_source</code> field tells you which source "won." All 3 sources are exported individually so BDRs can check every available contact.</p>
+
+  <div class="stat-row">
+    <div class="stat-card green">
+      <div class="number">450,246</div>
+      <div class="label">Contact Names Resolved</div>
+    </div>
+    <div class="stat-card">
+      <div class="number">344,207</div>
+      <div class="label">Contact Emails Resolved</div>
+    </div>
+    <div class="stat-card purple">
+      <div class="number">435,431</div>
+      <div class="label">FRS National Source</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="number">9,966</div>
+      <div class="label">TRI Source</div>
+    </div>
+  </div>
+
+  <h3>4 Contact Sources</h3>
+  <table>
+    <thead><tr><th>Source</th><th>Columns</th><th>Coverage</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><strong>FRS National</strong></td><td><code>frs_contact_name/email/phone/title/affiliation</code></td><td>435,431 resolved</td><td>EPA-registered facility contacts. Often environmental managers or compliance officers. <strong>Largest source.</strong></td></tr>
+      <tr><td><strong>TRI Public</strong></td><td><code>tri_contact_name/email/phone</code></td><td>9,966 resolved</td><td>From annual Toxics Release Inventory filings. Plant-level operational contacts.</td></tr>
+      <tr><td><strong>Enrichment</strong></td><td><code>enrichment_contact_name/email/phone</code></td><td>4,849 resolved</td><td>From Apollo/ZoomInfo batches. Often more senior titles.</td></tr>
+      <tr><td><strong>Resolved (best)</strong></td><td><code>contact_name/email/phone_resolved</code></td><td>450,246 name / 344,207 email</td><td>Auto-selected best via COALESCE cascade. <code>contact_source</code> tells you which won.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>FRS Mailing Address <span class="badge-inline badge-blue">NEW V12</span></h3>
+  <p>V12 added mailing address data from FRS for ~295,000 facilities:</p>
+  <table>
+    <thead><tr><th>Column</th><th>Coverage</th><th>Use Case</th></tr></thead>
+    <tbody>
+      <tr><td><code>frs_mailing_address</code></td><td>295,026</td><td>Direct mail campaigns</td></tr>
+      <tr><td><code>frs_mailing_city</code></td><td>295,023</td><td>Verify corporate office location</td></tr>
+      <tr><td><code>frs_mailing_state</code></td><td>285,868</td><td>Mailing may differ from facility state</td></tr>
+      <tr><td><code>frs_mailing_zip</code></td><td>289,039</td><td>Postal targeting</td></tr>
+    </tbody>
+  </table>
+
+  <div class="two-col">
+    <div>
+      <h3>Contact Coverage</h3>
+      <div class="chart-container"><canvas id="contactsFb"></canvas></div>
+    </div>
+    <div>
+      <h3>Contact Source Distribution</h3>
+      <div class="chart-container"><canvas id="contactsAll"></canvas></div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>FRS contacts are typically environmental/compliance staff</strong> — EHS managers, wastewater operators, compliance officers. These are your technical buyers. For economic buyers (CFO/VP), use LinkedIn prospecting via the parent company name.
+  </div>
+
+  <div class="callout orange">
+    <strong>Caveat: Contact Staleness</strong>
+    <p>FRS and TRI contacts may be stale. Always cross-reference with LinkedIn/ZoomInfo. The pipeline provides 1-3 contacts per facility from public records. For effective outreach sequences, BDRs should <strong>supplement with ZoomInfo/Apollo to reach 10+ contacts per deal.</strong></p>
+  </div>
+</div>
+
+<!-- 10. SIGNALS — SANDLER -->
+<div class="section" id="signals">
+  <h2>10. Sandler Outreach Signals — Confirm Reality, Uncover Pain</h2>
+  <p>Every signal below gives you a <strong>reason to call</strong>. Use the <strong>Micro-UFC opener</strong> for every first touch, then pivot to the signal-specific observation.</p>
+
+  <div class="callout" style="border-color:#7c3aed;background:var(--purple-light);">
+    <strong>Micro-UFC Opener (use for every signal):</strong><br>
+    <em>"Quick one — I'm reaching out because I noticed something in public records; if it's not relevant, we can drop it — fair?"</em><br>
+    <span style="font-size:0.85rem;color:var(--text-muted);">This sets the Up-Front Contract: gives them an out, lowers their guard, and earns permission to share the observation.</span>
+  </div>
+
+  <table>
+    <thead><tr><th style="width:12%">Signal</th><th style="width:12%">Field</th><th style="width:12%">Why It Matters</th><th style="width:32%">Sandler Opening</th><th style="width:32%">Pain Funnel Starter</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="badge-inline badge-red">SNC Flag</span></td>
+        <td><code>snc_flag = 1</code></td>
+        <td>Public compliance exposure; creates internal pressure + cost</td>
+        <td><em>"I might be off, but I'm seeing your site listed as SNC in public data. Is compliance currently a focus, or is that already resolved?"</em></td>
+        <td><em>"If it is a focus, what's the practical impact right now — time, cost, leadership attention, risk?"</em></td>
+      </tr>
+      <tr>
+        <td><span class="badge-inline badge-orange">Permit Expiring</span></td>
+        <td><code>permit_expiring_12m_flag = 1</code></td>
+        <td>Renewal triggers review, engineering, timelines</td>
+        <td><em>"Looks like your permit renewal window is coming up within ~12 months. Are you already set on the renewal plan, or still assessing?"</em></td>
+        <td><em>"What part of renewal is most painful — sampling, limits, engineering, schedule, or internal alignment?"</em></td>
+      </tr>
+      <tr>
+        <td><span class="badge-inline badge-red">Enforcement</span></td>
+        <td><code>active_federal_case_flag = 1</code></td>
+        <td>Formal action drives urgency + change mandates</td>
+        <td><em>"I noticed prior enforcement activity in the record. Is that behind you, or does it still affect how the team operates?"</em></td>
+        <td><em>"What changed after that — process, oversight, cost, reporting burden?"</em></td>
+      </tr>
+      <tr>
+        <td><span class="badge-inline badge-purple">Hot Zone</span></td>
+        <td><code>hot_zone_flag = 1</code></td>
+        <td>Converging stressors raise cost shock probability</td>
+        <td><em>"You're in an area where rates/regulatory pressure tend to tighten. Are water/sewer economics becoming a board-level topic?"</em></td>
+        <td><em>"If rates keep moving the way they've been, what breaks first — margin, production, expansion, or compliance?"</em></td>
+      </tr>
+      <tr>
+        <td><span class="badge-inline badge-green">CapEx Qualified</span></td>
+        <td><code>capex_qualification_status = QUALIFIED</code></td>
+        <td>Model indicates payback potential</td>
+        <td><em>"We ran a rough model using public inputs — it suggests there may be an economic case for process changes. Does your team look at water/sewer as a controllable cost?"</em></td>
+        <td><em>"If you could reduce total water/sewer cost meaningfully, where would that show up — budget, expansion, risk?"</em></td>
+      </tr>
+      <tr>
+        <td><span class="badge-inline badge-blue">POTW Dependent</span></td>
+        <td><code>potw_dependent_flag = 1</code></td>
+        <td>Surcharges + variability + limit risk</td>
+        <td><em>"It appears you discharge to a municipal system. Some teams get surprised by surcharge volatility — does that show up for you?"</em></td>
+        <td><em>"When it's not stable, what does it do — unexpected bills, ops changes, compliance exposure?"</em></td>
+      </tr>
+      <tr>
+        <td><span class="badge-inline badge-blue">Violations</span></td>
+        <td><code>effluent_violation_count_24m > 0</code></td>
+        <td>Limits pressure / process drift</td>
+        <td><em>"I'm seeing violations recorded in the last ~24 months. Are those one-off events, or is staying within limits a recurring headache?"</em></td>
+        <td><em>"If it's recurring, what's it costing you — engineering time, production constraints, reputational risk, penalties?"</em></td>
+      </tr>
+      <tr>
+        <td><span class="badge-inline badge-green">P2 / Source Reduction</span></td>
+        <td><code>tri_source_reduction_flag = 1</code></td>
+        <td>Willingness to invest in environmental initiatives</td>
+        <td><em>"I saw your company has documented source-reduction efforts. Is that mainly cost-driven, compliance-driven, or ESG-driven?"</em></td>
+        <td><em>"What would have to be true for discharge-side improvements to get prioritized the way source reduction did?"</em></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>V12 Enforcement Dollar Breakdowns</h3>
+  <p>V12 adds granular penalty breakdowns for more specific talking points:</p>
+  <table>
+    <thead><tr><th>Column</th><th>What It Is</th><th>Example Hook</th></tr></thead>
+    <tbody>
+      <tr><td><code>case_fed_penalty_amt</code></td><td>Federal penalty portion</td><td>"The federal portion alone was $X"</td></tr>
+      <tr><td><code>case_state_penalty_amt</code></td><td>State penalty portion</td><td>"State regulators assessed an additional $X"</td></tr>
+      <tr><td><code>case_sep_cost_amt</code></td><td>Supplemental Environmental Project costs</td><td>"The SEP commitment was $X — Cambrian can prevent the next one"</td></tr>
+      <tr><td><code>case_compliance_cost_amt</code></td><td>Compliance action costs</td><td>"Compliance remediation cost $X — treatment upgrades are cheaper"</td></tr>
+    </tbody>
+  </table>
+
+  <h3>BDR Call Script Column <span class="badge-inline badge-green">Every Facility</span></h3>
+  <p>The <code>bdr_call_script</code> column is a pre-generated Sandler-methodology natural language brief per facility. <strong>Every single facility (1,148,393) has a call script.</strong> It includes:</p>
+  <ul>
+    <li>Facility context (name, location, owner, flow, contaminants, treatment type)</li>
+    <li>Named contacts with emails from FRS and TRI</li>
+    <li>Key compliance signals with specific dollar amounts</li>
+    <li>4-6 tailored discovery questions based on the facility's specific signals</li>
+    <li>Domain warnings (third-party operator flags, stale contact indicators)</li>
+  </ul>
+
+  <div class="call-script-example">
+    <div class="example-label">Example: Molson Coors Golden Brewery</div>
+    <p><strong>MOLSON COORS USA LLC -- GOLDEN BREWERY</strong> is a food facility located at 12TH AND FORD STS, GOLDEN, CO 80401. It is owned by ROBERT MARUYAMA. The facility discharges approximately 13.00 MGD. It is regulated for nutrients, BOD/COD/TSS, metals, and toxicity parameters. The inferred treatment technology is advanced biological (confidence: medium-high). The following individuals are listed as points of contact: JEREMY WOOLF per EPA FRS records; and JOSH NOEL (JOSH.NOEL@MOLSONCOORS.COM) as the TRI reporting contact.</p>
+    <p>This facility has an active federal enforcement case with <strong>$4,254,900 in assessed penalties</strong>. The area has <strong>extremely high water stress</strong> (Aqueduct BWS: 4.17/5). The facility's NPDES permit expires in 8 months — a natural upgrade window.</p>
+    <p><strong>Discovery questions:</strong> (1) I saw some public compliance data that caught my eye — is that something you've been working through? (2) With the permit renewal window coming up, have you started looking at treatment technology options? (3) At 13 MGD, what percentage of your operational costs comes from water and wastewater? (4) If water allocations got cut 30% in your area, what would that do to production?</p>
+  </div>
+
+  <div class="callout green">
+    <strong>Sandler Rule:</strong> Never make claims about their situation — you are working from public data, not inside knowledge. Always give them an out: <em>"I might be off..."</em>, <em>"Is that already resolved?"</em>. If they confirm the pain, go deeper with the Pain Funnel.
+  </div>
+</div>
+
+<!-- 11. TERRITORIES -->
+<div class="section" id="territories">
+  <h2>11. Territories &amp; Reps</h2>
+
+  <div class="two-col">
+    <div>
+      <table>
+        <thead><tr><th>Territory</th><th>BDR</th><th>States</th><th>Facilities (DuckDB)</th></tr></thead>
+        <tbody>
+          <tr><td><strong>T1_west</strong></td><td><span class="badge-inline badge-blue">Haley</span></td><td>CA, OR, WA, NV, AZ, ID, MT, WY, UT, CO, NM</td><td>223,910</td></tr>
+          <tr><td><strong>T2_midwest</strong></td><td><span class="badge-inline badge-purple">Daniella</span></td><td>IL, IN, OH, MI, WI, MN, IA, MO</td><td>118,270</td></tr>
+          <tr><td><strong>T3_southeast</strong></td><td><span class="badge-inline badge-green">Jack</span></td><td>NC, SC, GA, FL, AL, TN, MS, KY</td><td>402,323</td></tr>
+          <tr><td><strong>T4_south_central</strong></td><td><span class="badge-inline badge-orange">Abril</span></td><td>TX, OK, KS, NE, SD, ND, AR, LA</td><td>215,901</td></tr>
+          <tr><td><strong>T5_northeast</strong></td><td><span class="badge-inline badge-red">James K</span></td><td>PA, NY, NJ, CT, MA, RI, NH, VT, ME, MD, DE, VA, WV</td><td>153,894</td></tr>
+          <tr><td><strong>T6_unassigned</strong></td><td><span class="badge-inline badge-gray">TBD</span></td><td>HI, AK, DC, PR, VI, GU, AS, MP</td><td>34,095</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <h3>Territory Distribution (DuckDB Facilities)</h3>
+      <div class="chart-container"><canvas id="terrChart"></canvas></div>
+    </div>
+  </div>
+
+  <p>The <code>territory_rep</code> field shows the assigned BDR name. Filter by <code>territory = T[X]_[region]</code> to get your territory's leads.</p>
+
+  <div class="callout">
+    <strong>Territory columns:</strong> <code>territory</code> (territory code), <code>territory_rep</code> (assigned BDR name), <code>deal_owner</code> (may differ from territory rep).
+  </div>
+</div>
+
+<!-- 12. SEGMENTS -->
+<div class="section" id="segments">
+  <h2>12. Segment Tables &amp; BDR Action Lists (34 CSVs)</h2>
+  <p>The pipeline outputs <strong>34 segment CSVs</strong>: 20 territory/master segments + 14 BDR action lists. These are pre-filtered views so you do not have to build complex queries.</p>
+
+  <h3>Territory Splits (12 files: 6 territories &times; 2 views)</h3>
+  <table>
+    <thead><tr><th>File</th><th>Filter</th><th>Rows</th></tr></thead>
+    <tbody>
+      <tr><td><code>leads_T1_west_fb.csv</code></td><td>F&amp;B + T1 states</td><td>7,018</td></tr>
+      <tr><td><code>leads_T1_west_all.csv</code></td><td>All industry (flow &ge; 100K GPD) + T1</td><td>1,678</td></tr>
+      <tr><td><code>leads_T2_midwest_fb.csv</code></td><td>F&amp;B + T2 states</td><td>4,623</td></tr>
+      <tr><td><code>leads_T2_midwest_all.csv</code></td><td>All industry + T2</td><td>4,358</td></tr>
+      <tr><td><code>leads_T3_southeast_fb.csv</code></td><td>F&amp;B + T3 states</td><td>5,022</td></tr>
+      <tr><td><code>leads_T3_southeast_all.csv</code></td><td>All industry + T3</td><td>9,502</td></tr>
+      <tr><td><code>leads_T4_south_central_fb.csv</code></td><td>F&amp;B + T4 states</td><td>4,168</td></tr>
+      <tr><td><code>leads_T4_south_central_all.csv</code></td><td>All industry + T4</td><td>2,813</td></tr>
+      <tr><td><code>leads_T5_northeast_fb.csv</code></td><td>F&amp;B + T5 states</td><td>4,110</td></tr>
+      <tr><td><code>leads_T5_northeast_all.csv</code></td><td>All industry + T5</td><td>4,062</td></tr>
+      <tr><td><code>leads_T6_unassigned_fb.csv</code></td><td>F&amp;B + T6 territories</td><td>920</td></tr>
+      <tr><td><code>leads_T6_unassigned_all.csv</code></td><td>All industry + T6</td><td>241</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Master Files (8 files)</h3>
+  <table>
+    <thead><tr><th>File</th><th>Filter</th><th>Rows</th></tr></thead>
+    <tbody>
+      <tr><td><code>leads_master_fb.csv</code></td><td>All F&amp;B facilities nationwide</td><td>26,614</td></tr>
+      <tr><td><code>leads_master_all.csv</code></td><td>All industry (flow &ge; 100K GPD) nationwide</td><td>22,656</td></tr>
+      <tr><td><code>leads_master_potw_dependent.csv</code></td><td>POTW-dependent facilities</td><td>5,585</td></tr>
+      <tr><td><code>leads_master_meat_dairy.csv</code></td><td>Meat &amp; dairy subset of F&amp;B</td><td>9,022</td></tr>
+      <tr><td><code>leads_master_capex_qualified.csv</code></td><td>CapEx qualified facilities</td><td>1,423</td></tr>
+      <tr><td><code>leads_tri_only_all.csv</code></td><td>TRI-only facilities (no NPDES permit)</td><td>3,553</td></tr>
+      <tr><td><code>leads_fb_confirmed_flow.csv</code></td><td>F&amp;B with confirmed flow > 0</td><td>7,197</td></tr>
+      <tr><td><code>leads_fb_needs_flow.csv</code></td><td>F&amp;B with missing/zero flow</td><td>19,417</td></tr>
+    </tbody>
+  </table>
+
+  <h3>14 BDR Action Lists <span class="badge-inline badge-green">NEW</span></h3>
+  <p>These are ready-to-work CSVs, already filtered and sorted by outreach strategy. Pick the list that matches your angle:</p>
+  <table class="bdr-action-table">
+    <thead><tr><th>File</th><th>Strategy</th><th>Filter Logic</th><th>Rows</th></tr></thead>
+    <tbody>
+      <tr><td><code>bdr_tier1_hair_on_fire</code></td><td><span class="badge-inline badge-red">Urgency</span></td><td>Active federal case OR SNC OR permit expiring OR 10+ effluent violations</td><td>20,850</td></tr>
+      <tr><td><code>bdr_tier2_math_works</code></td><td><span class="badge-inline badge-green">ROI</span></td><td>City-matched rates + (CapEx qualified OR high-cost market OR surcharge flag)</td><td>988</td></tr>
+      <tr><td><code>bdr_tier3_timing_right</code></td><td><span class="badge-inline badge-blue">Timing</span></td><td>Tight regulatory state OR Chesapeake Bay OR WWTP &ge;85% capacity OR stress increasing</td><td>32,074</td></tr>
+      <tr><td><code>bdr_tier4_openness</code></td><td><span class="badge-inline badge-purple">Sustainability</span></td><td>Source reduction OR P2 OR sustainability reporting OR water treatment use</td><td>5,628</td></tr>
+      <tr><td><code>bdr_tier5_actionable_contacts</code></td><td><span class="badge-inline badge-blue">Quick-start</span></td><td>Complete contact + parent company OR technical buyer</td><td>14,445</td></tr>
+      <tr><td><code>bdr_meat_dairy_urgent</code></td><td><span class="badge-inline badge-orange">Vertical</span></td><td>Meat/dairy NAICS + SNC/permit expiring/5+ violations</td><td>368</td></tr>
+      <tr><td><code>bdr_fb_high_flow</code></td><td><span class="badge-inline badge-green">Large F&amp;B</span></td><td>F&amp;B + flow &ge; 0.1 MGD + focus flag</td><td>1,384</td></tr>
+      <tr><td><code>bdr_potw_dependent_heavy</code></td><td><span class="badge-inline badge-orange">Surcharge</span></td><td>POTW dependent + >10K lbs POTW transfer</td><td>328</td></tr>
+      <tr><td><code>bdr_permit_expiring_12m</code></td><td><span class="badge-inline badge-red">Time-sensitive</span></td><td>Permit expiring within 12 months</td><td>2,102</td></tr>
+      <tr><td><code>bdr_chesapeake_nutrients</code></td><td><span class="badge-inline badge-blue">Regional</span></td><td>Chesapeake Bay + nutrients/organics</td><td>734</td></tr>
+      <tr><td><code>bdr_coastal_discharge</code></td><td><span class="badge-inline badge-purple">Environmental</span></td><td>Coastal within 10km + active discharge</td><td>652</td></tr>
+      <tr><td><code>bdr_perfect_storm_fb</code></td><td><span class="badge-inline badge-green">Best combo</span></td><td>F&amp;B + SNC/enforcement + flow confirmed + contacts</td><td>460</td></tr>
+      <tr><td><code>bdr_multi_site_parent</code></td><td><span class="badge-inline badge-blue">Account-based</span></td><td>Named parent + score &ge; 60</td><td>4,056</td></tr>
+      <tr><td><code>bdr_enterprise_targets</code></td><td><span class="badge-inline badge-purple">Enterprise</span></td><td>All facilities with named parent company</td><td>24,595</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout green">
+    <strong>Which list should I start with?</strong> If you are new to the data, start with <code>bdr_tier1_hair_on_fire</code> (urgency plays) or <code>bdr_perfect_storm_fb</code> (highest probability F&amp;B targets). Both have the strongest signal combinations for booking meetings.
+  </div>
+</div>
+
+<!-- 13. FIELDS REFERENCE -->
+<div class="section" id="fields">
+  <h2>13. Important Fields Reference</h2>
+  <p>The full dataset has <strong>197 columns</strong> per export CSV (385 internally in DuckDB). Here are the 30 most-used columns:</p>
+
+  <table>
+    <thead><tr><th>Field</th><th>Type</th><th>How to Use It</th></tr></thead>
+    <tbody>
+      <tr><td><code>lead_score_0_100</code></td><td>Decimal</td><td>Overall priority score. Sort descending. Higher = hotter.</td></tr>
+      <tr><td><code>gate</code></td><td>1/2/3</td><td>Priority tier: 1=hot, 2=warm, 3=developing. Filter to Gate 1 for immediate outbound.</td></tr>
+      <tr><td><code>flow_mgd</code></td><td>Decimal</td><td>Wastewater flow (millions gal/day). Deal size proxy.</td></tr>
+      <tr><td><code>facility_name</code></td><td>Text</td><td>Official plant name for outreach.</td></tr>
+      <tr><td><code>state_code</code></td><td>Text</td><td>2-letter state code for geographic filtering.</td></tr>
+      <tr><td><code>parent_company_resolved</code></td><td>Text</td><td>Corporate parent name for account-level targeting.</td></tr>
+      <tr><td><code>snc_flag</code></td><td>0/1</td><td>1 = Significant Non-Compliance with EPA. Top urgency signal.</td></tr>
+      <tr><td><code>active_federal_case_flag</code></td><td>0/1</td><td>1 = active federal enforcement case.</td></tr>
+      <tr><td><code>case_total_penalties_usd</code></td><td>Decimal</td><td>Total assessed penalties in dollars.</td></tr>
+      <tr><td><code>permit_expiring_12m_flag</code></td><td>0/1</td><td>1 = permit expires within 12 months. Time-sensitive hook.</td></tr>
+      <tr><td><code>capex_qualification_status</code></td><td>Text</td><td>QUALIFIED / NEAR_QUALIFIED / NOT_QUALIFIED</td></tr>
+      <tr><td><code>hot_zone_flag</code></td><td>0/1</td><td>1 = in a Cambrian hot zone market.</td></tr>
+      <tr><td><code>aqueduct_bws_label</code></td><td>Text</td><td>Water stress level (Low/High/Extremely High).</td></tr>
+      <tr><td><code>contact_email_resolved</code></td><td>Text</td><td>Best available contact email for outreach.</td></tr>
+      <tr><td><code>contact_name_resolved</code></td><td>Text</td><td>Best available contact person name.</td></tr>
+      <tr><td><code>bdr_call_script</code></td><td>Text</td><td>Pre-built Sandler discovery brief. Read before every call.</td></tr>
+      <tr><td><code>cambrian_fit_summary</code></td><td>Text</td><td>AI-generated opportunity narrative. Copy into CRM notes.</td></tr>
+      <tr><td><code>territory</code></td><td>Text</td><td>Cambrian territory assignment (T1_west, T2_midwest, etc.).</td></tr>
+      <tr><td><code>territory_rep</code></td><td>Text</td><td>Assigned BDR name (Haley, Daniella, Jack, Abril, James K).</td></tr>
+      <tr><td><code>hubspot_active_deal_flag</code> <span class="badge-inline badge-blue">V11</span></td><td>0/1</td><td>1 = already in HubSpot pipeline. Check before outreach.</td></tr>
+      <tr><td><code>hubspot_deal_name</code> <span class="badge-inline badge-blue">V11</span></td><td>Text</td><td>HubSpot deal name if matched.</td></tr>
+      <tr><td><code>hubspot_deal_stage</code> <span class="badge-inline badge-blue">V11</span></td><td>Text</td><td>Current deal stage in HubSpot.</td></tr>
+      <tr><td><code>hubspot_deal_owner</code> <span class="badge-inline badge-blue">V11</span></td><td>Text</td><td>Who owns the deal in HubSpot.</td></tr>
+      <tr><td><code>cambrian_target_industry_tag</code></td><td>Text</td><td>Industry vertical (Food, Beverage, Meat Processing, etc.).</td></tr>
+      <tr><td><code>food_bev_flag</code></td><td>0/1</td><td>1 = food &amp; beverage industry.</td></tr>
+      <tr><td><code>frs_naics_code</code> <span class="badge-inline badge-blue">V12</span></td><td>Text</td><td>FRS-registered NAICS code (backfills ICIS gaps).</td></tr>
+      <tr><td><code>case_fed_penalty_amt</code> <span class="badge-inline badge-blue">V12</span></td><td>Decimal</td><td>Federal penalty portion for specific talking points.</td></tr>
+      <tr><td><code>frs_alternative_names</code> <span class="badge-inline badge-blue">V12</span></td><td>Text</td><td>DBA/alias facility names from FRS.</td></tr>
+      <tr><td><code>us_mexico_border_ind</code> <span class="badge-inline badge-blue">V12</span></td><td>0/1</td><td>Within 100km of US-Mexico border.</td></tr>
+      <tr><td><code>frs_interest_types</code> <span class="badge-inline badge-blue">V12</span></td><td>Text</td><td>EPA program interest types (e.g., "AIR MINOR, NPDES MAJOR").</td></tr>
+    </tbody>
+  </table>
+
+  <p style="margin-top:12px;color:var(--text-muted);font-size:0.88rem;">Full 197-column data dictionary available in <code>NPDES_Column_Legend_V12.md</code> — see Section 16.</p>
+</div>
+
+<!-- 14. SANDLER PLAYBOOK -->
+<div class="section" id="playbook">
+  <h2>14. Sandler BDR Playbook — Using the Data</h2>
+  <p>This playbook follows the <strong>Sandler Selling System</strong>. You are not pitching Cambrian — you are using public data signals to start honest conversations about whether there is a real problem worth solving.</p>
+
+  <h3>Step 1: Build Your Hit List</h3>
+  <div class="callout green">
+    <strong>Quick start filter:</strong> <code>territory = [your territory]</code> + <code>gate = 1</code> + <code>contact_complete_flag = 1</code><br>
+    Or: pick a BDR action list from Section 12 that matches your outreach angle.
+  </div>
+
+  <h3>Step 2: Read the Call Script (30 seconds)</h3>
+  <p>Open the <code>bdr_call_script</code> column for your target facility. It contains:</p>
+  <ol>
+    <li>Facility context (name, location, owner, flow, contaminants)</li>
+    <li>Named contacts with emails</li>
+    <li>Key compliance signals with dollar amounts</li>
+    <li>4-6 tailored discovery questions</li>
+  </ol>
+
+  <h3>Step 3: Pick Your Signal (One Per Lead)</h3>
+  <p>Priority order:</p>
+  <ol>
+    <li><strong>SNC-flagged + CapEx Qualified</strong> — Highest urgency + economics work.</li>
+    <li><strong>Permit Expiring (&lt; 12 months)</strong> — Time-sensitive upgrade window.</li>
+    <li><strong>Recent Enforcement + Penalties</strong> — Past pain, open to preventing recurrence.</li>
+    <li><strong>Hot Zone + POTW Dependent</strong> — Cost pressure rising.</li>
+    <li><strong>Violations (recurring)</strong> — Process drift headache.</li>
+    <li><strong>P2 / Source Reduction Activity</strong> — Openness signal.</li>
+    <li><strong>CapEx Qualified (no other signal)</strong> — Pure economics, soft opener.</li>
+  </ol>
+
+  <h3>Step 4: The Sandler Call Framework</h3>
+  <div style="background:var(--gray-light);border-radius:10px;padding:24px;margin:16px 0;">
+    <div class="cascade-box" style="background:white;">
+      <div class="cascade-step"><div class="cascade-num" style="background:#7c3aed;">1</div><div class="cascade-text"><strong>Micro-UFC (Up-Front Contract)</strong><br><em>"Quick one — I'm reaching out because I noticed something in public records; if it's not relevant, we can drop it — fair?"</em></div></div>
+      <div class="cascade-arrow">&darr;</div>
+      <div class="cascade-step"><div class="cascade-num" style="background:#7c3aed;">2</div><div class="cascade-text"><strong>Signal-Specific Observation</strong><br>State what you see — as a question, not a claim. (See Section 10 for scripts.)</div></div>
+      <div class="cascade-arrow">&darr;</div>
+      <div class="cascade-step"><div class="cascade-num" style="background:#7c3aed;">3</div><div class="cascade-text"><strong>Pain Funnel (if they confirm)</strong><br><em>"What's the practical impact?"</em> &rarr; <em>"How long?"</em> &rarr; <em>"What have you tried?"</em> &rarr; <em>"How much is it costing?"</em> &rarr; <em>"Have you given up solving it?"</em></div></div>
+      <div class="cascade-arrow">&darr;</div>
+      <div class="cascade-step"><div class="cascade-num" style="background:#7c3aed;">4</div><div class="cascade-text"><strong>Next Step (only if pain is real)</strong><br><em>"Would it make sense to have a 20-minute call where we share what we've seen with similar facilities?"</em></div></div>
+    </div>
+  </div>
+
+  <h3>Step 5: Multi-Site Account Plays</h3>
+  <p>Use <code>bdr_enterprise_targets</code> (24,595 facilities) or <code>bdr_multi_site_parent</code> (4,056 facilities) to identify multi-site operators.</p>
+  <div class="callout" style="border-color:#7c3aed;background:var(--purple-light);">
+    <strong>Enterprise UFC:</strong> <em>"We work with companies that have multiple facilities with wastewater permits. I can see from public data that [Company] has [X] sites across [Y] states. We built a model that flags which sites might have the strongest economic case — would it be worth 15 minutes to see if any of it resonates?"</em>
+  </div>
+
+  <h3>What NOT to Do</h3>
+  <div class="callout red">
+    <strong>Sandler Anti-Patterns:</strong>
+    <ul style="margin:8px 0 0 20px;">
+      <li><strong>Don't lead with Cambrian's capabilities.</strong> They care what their problem costs them.</li>
+      <li><strong>Don't cite the implied_growth_capex dollar amount.</strong> It is a model input.</li>
+      <li><strong>Don't stack signals.</strong> Pick one. Go deep.</li>
+      <li><strong>Don't assume the data is current.</strong> Frame as: <em>"I'm seeing..."</em></li>
+      <li><strong>Don't chase.</strong> If they say it is not relevant, say <em>"Fair enough."</em> Move on. The list has 14,763 Gate 1 leads.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 15. FAQ -->
+<div class="section" id="faq">
+  <h2>15. FAQ</h2>
+
+  <h3>General</h3>
+
+  <h3>Q: How fresh is this data?</h3>
+  <p>The pipeline was last run in <strong>February 2026 (V12)</strong>. EPA data sources are updated quarterly. Market rates were researcher-verified in early 2026. Violation and enforcement data covers the trailing 24-60 months depending on the metric.</p>
+
+  <h3>Q: Why are there 1.1M rows in DuckDB but only ~252K in the CSVs?</h3>
+  <p>The export applies quality filters that remove sewerage systems, excluded industries (municipal water, electric utilities without wastewater), terminated facilities, and facilities without NPDES permits or TRI records. The ~252K rows are the qualified prospect universe.</p>
+
+  <h3>Q: What is the difference between "leads_master_fb" and "leads_T1_west_fb"?</h3>
+  <p><code>leads_master_fb.csv</code> is ALL F&amp;B facilities nationwide (26,614 rows). <code>leads_T1_west_fb.csv</code> is the F&amp;B subset for the West territory only (7,018 rows). Same 197 columns, just filtered by territory.</p>
+
+  <h3>Q: What are the new V12 columns?</h3>
+  <p>V12 added 16 columns: FRS NAICS/SIC codes (<code>frs_naics_code</code>, <code>frs_naics_desc</code>, <code>frs_sic_code</code>, <code>frs_sic_desc</code>), mailing addresses (<code>frs_mailing_address/city/state/zip</code>), enforcement dollar breakdowns (<code>case_fed_penalty_amt</code>, <code>case_state_penalty_amt</code>, <code>case_sep_cost_amt</code>, <code>case_compliance_cost_amt</code>), alternative names (<code>frs_alternative_names</code>), and FRS National Single data (<code>frs_interest_types</code>, <code>frs_pgm_sys_acrnms</code>, <code>us_mexico_border_ind</code>).</p>
+
+  <h3>Columns</h3>
+
+  <h3>Q: What is <code>frs_alternative_names</code>?</h3>
+  <p>DBA (Doing Business As) and alias names for the facility from EPA's FRS registry. Useful for matching facilities that operate under different names. Example: a Tyson plant might also be registered as "IBP Fresh Meats."</p>
+
+  <h3>Q: What is <code>us_mexico_border_ind</code>?</h3>
+  <p>A flag indicating the facility is within 100km of the US-Mexico border. Comes from the FRS National Single file. Relevant for border region environmental compliance programs and bilateral water management initiatives.</p>
+
+  <h3>Q: What is the <code>bdr_call_script</code>?</h3>
+  <p>A pre-generated Sandler-methodology natural language research brief for every facility (1,148,393 total — 100% coverage). It includes facility context, named contacts with emails, compliance signals with dollar amounts, and 4-6 tailored discovery questions. See Section 10 for the Molson Coors example.</p>
+
+  <h3>Q: What if a facility is already in HubSpot?</h3>
+  <p>The <code>hubspot_active_deal_flag</code> column will be <code>1</code>. Check <code>hubspot_deal_name</code>, <code>hubspot_deal_stage</code>, and <code>hubspot_deal_owner</code> to see who is working it. If the deal is stale (no activity in 60+ days), coordinate with the deal owner. If it is actively being worked, skip it.</p>
+
+  <h3>Q: How do I use <code>case_fed_penalty_amt</code> vs <code>case_total_penalties_usd</code>?</h3>
+  <p><code>case_total_penalties_usd</code> is the grand total. V12 breaks this into: <code>case_fed_penalty_amt</code> (federal), <code>case_state_penalty_amt</code> (state), <code>case_sep_cost_amt</code> (SEP costs), <code>case_compliance_cost_amt</code> (compliance actions). Use breakdowns for specific talking points.</p>
+
+  <h3>Scoring</h3>
+
+  <h3>Q: Can a facility have Gate 1 but NOT be CapEx Qualified?</h3>
+  <p>Yes. Gate is based on <code>lead_score_0_100</code> (compliance pressure, industry fit, flow, market signals). CapEx qualification only checks economics at local water rates. A facility with severe SNC and high flow but low rates could be Gate 1 but not CapEx Qualified.</p>
+
+  <h3>Q: What does "flow confidence" mean?</h3>
+  <p><code>flow_confidence_flag</code>: <strong>high</strong> (from ICIS actual or DMR average), <strong>medium</strong> (permit design flow), <strong>low</strong> (outfall or enrichment), <strong>none</strong> (no flow data).</p>
+
+  <h3>Workflow</h3>
+
+  <h3>Q: The call script contacts seem outdated — where do I find current contacts?</h3>
+  <p>Three backup options:</p>
+  <ol>
+    <li><strong>FRS Facility Detail page:</strong> <code>https://ofmpub.epa.gov/frs_public2/fii_query_detail.disp_program_facility?p_registry_id={frs_registry_id}</code></li>
+    <li><strong>EPA ECHO:</strong> <code>https://echo.epa.gov/detailed-facility-report?fid={npdes_id}</code></li>
+    <li><strong>ZoomInfo/Apollo:</strong> Search <code>parent_company_resolved</code> + <code>city</code> for fresh contacts</li>
+  </ol>
+
+  <h3>Q: Can I see this facility's actual permit?</h3>
+  <p>Yes — go to <code>echo.epa.gov</code> and search by the <code>npdes_id</code>. You will see the full permit, inspection history, and compliance record.</p>
+
+  <h3>Q: What is a "hot zone"?</h3>
+  <p>Hot zones are geographic areas where water stress, regulatory stringency, and high water/sewer costs converge. The <code>hot_zone_tier</code> field rates intensity (1 = highest), and <code>hot_zone_gtm_play</code> gives you the recommended sales approach. 619,085 facilities are in hot zones.</p>
+</div>
+
+<!-- 16. DATA DICTIONARY -->
+<div class="section" id="dictionary">
+  <h2>16. Data Dictionary / Column Legend</h2>
+  <p>The pipeline exports <strong>197 columns per CSV</strong> (385 columns internally in DuckDB including intermediate/diagnostic fields). For the complete column-by-column reference with types, examples, definitions, and use cases, see:</p>
+
+  <div class="callout green">
+    <strong>Full reference:</strong> <code>NPDES_Column_Legend_V12.md</code> — 197 columns organized by category with data types, example values, plain-language definitions, and BDR use cases.
+  </div>
+
+  <h3>Column Count by Category (197 total)</h3>
+  <table>
+    <thead><tr><th>Category</th><th>Columns</th><th>Key Fields</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Identity</strong></td><td>7</td><td><code>lead_id</code>, <code>npdes_id</code>, <code>frs_registry_id</code>, <code>facility_name</code>, <code>deal_name</code></td></tr>
+      <tr><td><strong>Location</strong></td><td>10</td><td><code>city</code>, <code>state_code</code>, <code>zip</code>, <code>latitude_resolved</code>, <code>frs_county</code></td></tr>
+      <tr><td><strong>Industry</strong></td><td>9</td><td><code>primary_naics_code</code>, <code>food_bev_flag</code>, <code>cambrian_target_industry_tag</code></td></tr>
+      <tr><td><strong>Flow</strong></td><td>10</td><td><code>flow_mgd</code>, <code>flow_source</code>, <code>flow_confidence_flag</code>, <code>flow_100k_gpd_flag</code></td></tr>
+      <tr><td><strong>Contact — Resolved</strong></td><td>5</td><td><code>contact_name_resolved</code>, <code>contact_email_resolved</code>, <code>contact_source</code></td></tr>
+      <tr><td><strong>Contact — Individual Sources</strong></td><td>11</td><td><code>frs_contact_name/email/phone/title</code>, <code>tri_contact_*</code>, <code>enrichment_contact_*</code></td></tr>
+      <tr><td><strong>Ownership</strong></td><td>8</td><td><code>parent_company_resolved</code>, <code>frs_org_type</code>, <code>frs_org_duns</code></td></tr>
+      <tr><td><strong>Compliance</strong></td><td>20</td><td><code>snc_flag</code>, <code>active_federal_case_flag</code>, <code>case_total_penalties_usd</code>, violations</td></tr>
+      <tr><td><strong>Permit</strong></td><td>9</td><td><code>permit_status_code</code>, <code>permit_expiring_12m_flag</code>, <code>permit_months_to_expiry</code></td></tr>
+      <tr><td><strong>Treatment Signals</strong></td><td>11</td><td><code>has_nutrients</code>, <code>has_organics_solids</code>, <code>has_metals</code>, <code>treatment_technology_inferred</code></td></tr>
+      <tr><td><strong>Discharge</strong></td><td>3</td><td><code>discharge_point_count</code>, <code>data_quality_tier</code></td></tr>
+      <tr><td><strong>Municipality Linkage</strong></td><td>3</td><td><code>linked_municipality_count</code>, <code>linked_municipalities</code></td></tr>
+      <tr><td><strong>HydroWASTE</strong></td><td>6</td><td>WWTP matching, treatment level, capacity utilization, coastal proximity</td></tr>
+      <tr><td><strong>Market &amp; Water Stress</strong></td><td>30</td><td><code>hot_zone_flag</code>, <code>aqueduct_bws_label</code>, <code>mr_water_rate_kgal</code>, <code>market_surcharge_flag</code></td></tr>
+      <tr><td><strong>TRI &amp; Sustainability</strong></td><td>9</td><td><code>tri_source_reduction_flag</code>, <code>potw_dependent_flag</code>, <code>tri_total_releases_lbs</code></td></tr>
+      <tr><td><strong>Market Intelligence</strong></td><td>3</td><td><code>hot_zone_gtm_play</code>, state regulatory profiles</td></tr>
+      <tr><td><strong>CapEx</strong></td><td>5</td><td><code>implied_growth_capex</code>, <code>capex_qualification_status</code>, <code>required_rate_for_qualification</code></td></tr>
+      <tr><td><strong>Scoring</strong></td><td>7</td><td><code>lead_score_0_100</code>, <code>gate</code>, <code>contaminant_score</code>, <code>regulatory_score</code></td></tr>
+      <tr><td><strong>Metadata</strong></td><td>5</td><td><code>pipeline_version</code>, <code>pipeline_run_date</code>, <code>export_segment</code></td></tr>
+      <tr><td><strong>Summary</strong></td><td>4</td><td><code>cambrian_fit_summary</code>, <code>bdr_call_script</code>, <code>territory</code>, <code>territory_rep</code></td></tr>
+      <tr><td><strong>V11 New</strong></td><td>6</td><td><code>hubspot_active_deal_flag</code>, <code>hubspot_deal_name/stage/owner</code>, <code>bdr_call_script</code>, <code>mr_rate_source</code></td></tr>
+      <tr><td><strong>V12 New</strong></td><td>16</td><td><code>frs_naics_code/desc</code>, <code>frs_sic_code/desc</code>, <code>frs_mailing_*</code>, <code>case_fed/state/sep/compliance_*_amt</code>, <code>frs_alternative_names</code>, <code>frs_interest_types</code>, <code>frs_pgm_sys_acrnms</code>, <code>us_mexico_border_ind</code></td></tr>
+    </tbody>
+    <tfoot>
+      <tr style="background:var(--blue-light);font-weight:700;"><td>Total</td><td>197</td><td></td></tr>
+    </tfoot>
+  </table>
+
+  <h3>Version History</h3>
+  <table>
+    <thead><tr><th>Version</th><th>Columns</th><th>Key Additions</th></tr></thead>
+    <tbody>
+      <tr><td><strong>V9</strong></td><td>123</td><td>Baseline: NPDES + FRS + TRI + Aqueduct + HydroWASTE + Market + Scoring + CapEx</td></tr>
+      <tr><td><strong>V10</strong></td><td>175</td><td>Market rates (mr_*), surcharge details, state regulatory profiles, Chesapeake Bay, treatment technology inference, municipality linkage, biosolids, scoring sub-components</td></tr>
+      <tr><td><strong>V11</strong></td><td>181</td><td><code>mr_rate_source</code>, <code>hubspot_active_deal_flag</code>, <code>hubspot_deal_name/stage/owner</code>, <code>bdr_call_script</code></td></tr>
+      <tr><td><strong>V12</strong></td><td>197</td><td>FRS NAICS/SIC, mailing addresses, enforcement dollar breakdowns, alternative names, FRS National Single (interest types, program acronyms, US-Mexico border indicator)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+</div>
+
+<div class="footer">
+  Cambrian NPDES Pipeline V12 — Data Guide for BDRs — February 2026<br>
+  1,148,393 facilities &middot; 197 columns &middot; 34 segment CSVs &middot; 14 BDR action lists<br>
+  Sandler Selling Methodology integrated. For questions about the data, methodology, or scoring, contact the data team.
+</div>
+
+<script>
+// Chart defaults
+Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+Chart.defaults.font.size = 12;
+
+// Score histogram
+new Chart(document.getElementById('scoreHistAll'), {
+  type: 'bar',
+  data: {
+    labels: ['90-100', '70-89', '50-69', '30-49', '0-29'],
+    datasets: [{
+      label: 'Facilities by Score Range',
+      data: [2100, 12663, 16440, 72025, 1045165],
+      backgroundColor: ['#16a34a','#22c55e','#3b82f6','#f59e0b','#cbd5e1'],
+      borderRadius: 4
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, title: { display: true, text: 'Facilities' }, type: 'logarithmic' }
+    }
+  }
+});
+
+// Avg component scores - All Industry
+new Chart(document.getElementById('avgPtsAll'), {
+  type: 'radar',
+  data: {
+    labels: ['Flow (25)', 'Industry (20)', 'Contaminant (15)', 'Compliance (15)', 'Market (10)', 'Regulatory (10)'],
+    datasets: [{
+      label: 'Avg Score',
+      data: [15.6, 11.7, 4.3, 6.9, 2.0, 2.2],
+      backgroundColor: 'rgba(37,99,235,0.15)',
+      borderColor: '#2563eb',
+      pointBackgroundColor: '#2563eb',
+      borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    scales: { r: { beginAtZero: true, max: 25, ticks: { stepSize: 5 } } },
+    plugins: { legend: { display: false } }
+  }
+});
+
+// Avg component scores - F&B
+new Chart(document.getElementById('avgPtsFb'), {
+  type: 'radar',
+  data: {
+    labels: ['Flow (25)', 'Industry (20)', 'Contaminant (15)', 'Compliance (15)', 'Market (10)', 'Regulatory (10)'],
+    datasets: [{
+      label: 'Avg Score',
+      data: [3.8, 20.0, 1.1, 3.6, 3.8, 3.9],
+      backgroundColor: 'rgba(22,163,74,0.15)',
+      borderColor: '#16a34a',
+      pointBackgroundColor: '#16a34a',
+      borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    scales: { r: { beginAtZero: true, max: 25, ticks: { stepSize: 5 } } },
+    plugins: { legend: { display: false } }
+  }
+});
+
+// Gate distribution - doughnut
+new Chart(document.getElementById('gateChartAll'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Gate 1 (14,763)', 'Gate 2 (16,440)', 'Gate 3 (72,025)'],
+    datasets: [{
+      data: [14763, 16440, 72025],
+      backgroundColor: ['#16a34a','#3b82f6','#f59e0b'],
+      borderWidth: 2, borderColor: '#fff'
+    }]
+  },
+  options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } } }
+});
+
+// Gate by signal bar chart
+new Chart(document.getElementById('gateChartFb'), {
+  type: 'bar',
+  data: {
+    labels: ['SNC', 'Fed Enforcement', 'Permit Expiring', 'Hot Zone', 'CapEx Qual'],
+    datasets: [{
+      label: 'Facilities with Signal',
+      data: [63026, 34994, 93047, 619085, 8673],
+      backgroundColor: ['#dc2626','#ea580c','#f59e0b','#7c3aed','#16a34a'],
+      borderRadius: 4
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: { y: { beginAtZero: true, title: { display: true, text: 'Facilities' } } }
+  }
+});
+
+// CapEx distribution
+new Chart(document.getElementById('capexAll'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Qualified (8,673)', 'Near Qualified (2,493)', 'Not Qualified (remainder)'],
+    datasets: [{
+      data: [8673, 2493, 241480],
+      backgroundColor: ['#16a34a','#3b82f6','#cbd5e1'],
+      borderWidth: 2, borderColor: '#fff'
+    }]
+  },
+  options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } } }
+});
+
+// Contact coverage
+new Chart(document.getElementById('contactsFb'), {
+  type: 'bar',
+  data: {
+    labels: ['Names Resolved', 'Emails Resolved', 'FRS National', 'TRI Source', 'Enrichment'],
+    datasets: [{
+      label: 'Contacts',
+      data: [450246, 344207, 435431, 9966, 4849],
+      backgroundColor: ['#3b82f6','#8b5cf6','#16a34a','#f59e0b','#06b6d4'],
+      borderRadius: 4
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+    plugins: { legend: { display: false } },
+    scales: { x: { beginAtZero: true } }
+  }
+});
+
+// Contact source pie
+new Chart(document.getElementById('contactsAll'), {
+  type: 'doughnut',
+  data: {
+    labels: ['FRS National (435,431)', 'TRI (9,966)', 'Enrichment (4,849)'],
+    datasets: [{
+      data: [435431, 9966, 4849],
+      backgroundColor: ['#16a34a','#f59e0b','#8b5cf6'],
+      borderWidth: 2, borderColor: '#fff'
+    }]
+  },
+  options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } } }
+});
+
+// Territory chart
+new Chart(document.getElementById('terrChart'), {
+  type: 'bar',
+  data: {
+    labels: ['T1 West\n(Haley)', 'T2 Midwest\n(Daniella)', 'T3 Southeast\n(Jack)', 'T4 South Central\n(Abril)', 'T5 Northeast\n(James K)', 'T6 Other\n(TBD)'],
+    datasets: [{
+      label: 'Facilities (DuckDB)',
+      data: [223910, 118270, 402323, 215901, 153894, 34095],
+      backgroundColor: ['#3b82f6','#8b5cf6','#06b6d4','#f59e0b','#16a34a','#cbd5e1'],
+      borderRadius: 4
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: { y: { beginAtZero: true, title: { display: true, text: 'Facilities' } } }
+  }
+});
+</script>
+
+</body>
+</html>

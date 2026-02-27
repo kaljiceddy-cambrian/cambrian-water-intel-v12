@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambrian Water Intelligence V12</title>
+    <style>
+        :root {
+            --blue: #1a73e8;
+            --blue-light: #e8f0fe;
+            --green: #0d9488;
+            --green-light: #ccfbf1;
+            --orange: #ea580c;
+            --orange-light: #fff7ed;
+            --purple: #7c3aed;
+            --purple-light: #f3e8ff;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --gray-light: #f1f5f9;
+            --white: #ffffff;
+            --border: #e2e8f0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 100px;
+            padding: 0.5rem 1.25rem;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo-badge .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 8px rgba(13,148,136,0.6);
+        }
+
+        .logo-badge span {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            color: var(--white);
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 0.75rem;
+        }
+
+        h1 .accent {
+            background: linear-gradient(135deg, var(--blue), var(--green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: rgba(255,255,255,0.5);
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        @media (max-width: 640px) {
+            .cards { grid-template-columns: 1fr; }
+            h1 { font-size: 1.75rem; }
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 2rem;
+            text-decoration: none;
+            color: var(--dark);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .card.data-guide::before {
+            background: linear-gradient(90deg, var(--blue), var(--purple));
+        }
+
+        .card.market-intel::before {
+            background: linear-gradient(90deg, var(--green), var(--orange));
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .card.data-guide .card-icon {
+            background: var(--blue-light);
+        }
+
+        .card.market-intel .card-icon {
+            background: var(--green-light);
+        }
+
+        .card h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .card p {
+            font-size: 0.9rem;
+            color: var(--gray);
+            line-height: 1.6;
+            margin-bottom: 1.25rem;
+        }
+
+        .card-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .stat-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.25rem 0.65rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: var(--gray-light);
+            color: var(--gray);
+        }
+
+        .card.data-guide .stat-chip {
+            background: var(--blue-light);
+            color: var(--blue);
+        }
+
+        .card.market-intel .stat-chip {
+            background: var(--green-light);
+            color: var(--green);
+        }
+
+        .card-arrow {
+            position: absolute;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            opacity: 0.4;
+        }
+
+        .card:hover .card-arrow {
+            opacity: 1;
+            transform: translateX(2px);
+        }
+
+        .card.data-guide .card-arrow { color: var(--blue); }
+        .card.market-intel .card-arrow { color: var(--green); }
+
+        .footer {
+            text-align: center;
+        }
+
+        .footer-stats {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-stat {
+            text-align: center;
+        }
+
+        .footer-stat .number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .footer-stat .label {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.25rem;
+        }
+
+        .footer-divider {
+            width: 60px;
+            height: 1px;
+            background: rgba(255,255,255,0.15);
+            margin: 0 auto 1rem;
+        }
+
+        .footer-text {
+            color: rgba(255,255,255,0.3);
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-badge">
+                <div class="dot"></div>
+                <span>Pipeline V12 &middot; February 2026</span>
+            </div>
+            <h1>Cambrian <span class="accent">Water Intelligence</span></h1>
+            <p class="subtitle">NPDES Pipeline Data &amp; Market Intelligence Artifacts</p>
+        </div>
+
+        <div class="cards">
+            <a href="Cambrian_NPDES_Pipeline_Data_Guide.html" class="card data-guide">
+                <div class="card-icon">&#128202;</div>
+                <h2>NPDES Pipeline Data Guide</h2>
+                <p>Complete reference for the V12 pipeline — scoring methodology, gate system, BDR workflow, territory assignments, and full 197-column data dictionary.</p>
+                <div class="card-stats">
+                    <span class="stat-chip">1.14M Facilities</span>
+                    <span class="stat-chip">197 Columns</span>
+                    <span class="stat-chip">14 BDR Lists</span>
+                    <span class="stat-chip">5 Territories</span>
+                </div>
+                <div class="card-arrow">&#8594;</div>
+            </a>
+
+            <a href="Cambrian_Market_Intelligence_Reference.html" class="card market-intel">
+                <div class="card-icon">&#127758;</div>
+                <h2>Market Intelligence Reference</h2>
+                <p>All market intelligence in one place — state scorecards, water economics, surcharge markets, buyer archetypes, GTM plays, regulatory timelines, funding programs.</p>
+                <div class="card-stats">
+                    <span class="stat-chip">16 Sections</span>
+                    <span class="stat-chip">51 State Profiles</span>
+                    <span class="stat-chip">148 City Rates</span>
+                    <span class="stat-chip">2,182 Programs</span>
+                </div>
+                <div class="card-arrow">&#8594;</div>
+            </a>
+        </div>
+
+        <div class="footer">
+            <div class="footer-stats">
+                <div class="footer-stat">
+                    <div class="number">1,148,393</div>
+                    <div class="label">Facilities Scored</div>
+                </div>
+                <div class="footer-stat">
+                    <div class="number">344,207</div>
+                    <div class="label">Email Contacts</div>
+                </div>
+                <div class="footer-stat">
+                    <div class="number">34</div>
+                    <div class="label">Segment CSVs</div>
+                </div>
+                <div class="footer-stat">
+                    <div class="number">51</div>
+                    <div class="label">State GTM Briefs</div>
+                </div>
+            </div>
+            <div class="footer-divider"></div>
+            <p class="footer-text">Cambrian Innovation &middot; Water Intelligence Pipeline V12 &middot; Internal Use Only</p>
+        </div>
+    </div>
+</body>
+</html>
