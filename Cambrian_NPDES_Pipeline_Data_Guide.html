@@ -124,7 +124,7 @@
 <div class="header">
   <h1>Cambrian NPDES Leads Pipeline</h1>
   <p class="subtitle">A complete guide to understanding the data — where it comes from, how it's scored, and how to use it for outreach. Every facility has a pre-built <code style="background:rgba(255,255,255,0.2);color:white;">bdr_call_script</code> research brief.</p>
-  <span class="badge">Pipeline V12 &nbsp;&middot;&nbsp; February 2026 &nbsp;&middot;&nbsp; 44,594 Qualified Facilities</span>
+  <span class="badge">Pipeline V12.1 &nbsp;&middot;&nbsp; February 27, 2026 &nbsp;&middot;&nbsp; 44,594 Qualified Facilities</span>
 </div>
 
 <div class="container">
@@ -1007,6 +1007,30 @@
   <div class="callout green">
     <strong>Which list should I start with?</strong> If you are new to the data, start with <code>bdr_tier1_hair_on_fire</code> (urgency plays) or <code>bdr_perfect_storm_fb</code> (highest probability F&amp;B targets). Both have the strongest signal combinations for booking meetings.
   </div>
+
+
+<h3>NEW: Top 100 Psychographic Deals <span class="badge-inline badge-green">NEW</span></h3>
+<p><code>top_100_deals.csv</code> — 100 highest-priority F&B deals, territory-balanced (~20 per BDR). Scored by psychographic composite:</p>
+<ul>
+<li><strong>Pain (40%):</strong> SNC, enforcement, permit expiry, cost pressure, violations, penalties</li>
+<li><strong>Openness (30%):</strong> Source reduction, P2 programs, sustainability signals, upgrade interest</li>
+<li><strong>Sandler Fit (30%):</strong> CapEx qualification, parent company, contacts, flow confidence</li>
+</ul>
+<p>Final rank = 50% lead_score + 50% psychographic composite. Includes <code>top_trigger</code> (why call now) and <code>suggested_angle</code> (how to open).</p>
+
+<h3>NEW: 4 Motive Segments <span class="badge-inline badge-purple">NEW</span></h3>
+<p>Hypothesis-driven lists, each built around a specific commercial pain point:</p>
+<table><thead><tr><th>Segment</th><th>File</th><th>Count</th><th>Definition</th></tr></thead><tbody>
+<tr><td>Regulatory Pressure + Timing</td><td><code>segment_reg_pressure_timing.csv</code></td><td>269</td><td>SNC/enforcement + permit expiring 12m</td></tr>
+<tr><td>High Sewer Cost</td><td><code>segment_high_sewer_cost.csv</code></td><td>31</td><td>POTW-dependent + surcharge exposure</td></tr>
+<tr><td>Water Scarcity</td><td><code>segment_water_scarcity.csv</code></td><td>9,101</td><td>Aqueduct BWS &ge;3 + stress increasing</td></tr>
+<tr><td>Complex Wastewater</td><td><code>segment_complex_wastewater.csv</code></td><td>2,366</td><td>8+ regulated parameters + nutrients/metals/toxicity</td></tr>
+</tbody></table>
+
+<h3>NEW: Enforcement + Permit Expiring (F&B) <span class="badge-inline badge-red">NEW</span></h3>
+<p><code>enforcement_permit_expiring_fb.csv</code> — 144 strict F&B facilities with active enforcement cases AND permits expiring within 12 months. Severity-tagged (114 CRITICAL, 9 HIGH, 21 MODERATE). Every row includes an EPA ECHO URL. Top states: TX (29), AK (13), OR (13).</p>
+<p><code>enforcement_cases_all_industries.csv</code> — 29,110 facilities with enforcement cases across all industries (minus pipeline exclusions).</p>
+
 </div>
 
 <!-- 13. FIELDS REFERENCE -->
@@ -1565,6 +1589,7 @@
   <table>
     <thead><tr><th>Version</th><th>Columns</th><th>Key Additions</th></tr></thead>
     <tbody>
+<tr><td><span class="badge-inline badge-green">V12.1</span></td><td>Feb 27, 2026</td><td>Added: Top 100 psychographic-scored deals, 4 motive segments, enforcement + permit expiring F&B list (144 facilities), state theses in GTM briefs, Sandler talk tracks for all 51 states, EPA ECHO URLs in facility tables, F&B-only filtering on brief Top 25.</td></tr>
       <tr><td><strong>V9</strong></td><td>123</td><td>Baseline: NPDES + FRS + TRI + Aqueduct + HydroWASTE + Market + Scoring + CapEx</td></tr>
       <tr><td><strong>V10</strong></td><td>175</td><td>Market rates (mr_*), surcharge details, state regulatory profiles, Chesapeake Bay, treatment technology inference, municipality linkage, biosolids, scoring sub-components</td></tr>
       <tr><td><strong>V11</strong></td><td>181</td><td><code>mr_rate_source</code>, <code>hubspot_active_deal_flag</code>, <code>hubspot_deal_name/stage/owner</code>, <code>bdr_call_script</code></td></tr>
