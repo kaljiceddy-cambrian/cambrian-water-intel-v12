@@ -124,7 +124,7 @@
 <div class="header">
   <h1>Cambrian NPDES Leads Pipeline</h1>
   <p class="subtitle">A complete guide to understanding the data — where it comes from, how it's scored, and how to use it for outreach. Every facility has a pre-built <code style="background:rgba(255,255,255,0.2);color:white;">bdr_call_script</code> research brief.</p>
-  <span class="badge">Pipeline V12 &nbsp;&middot;&nbsp; February 2026 &nbsp;&middot;&nbsp; 1,148,393 facilities</span>
+  <span class="badge">Pipeline V12 &nbsp;&middot;&nbsp; February 2026 &nbsp;&middot;&nbsp; 44,594 Qualified Facilities</span>
 </div>
 
 <div class="container">
@@ -155,7 +155,7 @@
 <!-- 1. OVERVIEW -->
 <div class="section" id="overview">
   <h2>1. What Is This Data?</h2>
-  <p>The Cambrian NPDES Leads Pipeline is a <strong>unified database of 1,148,393 US regulated wastewater facilities</strong> that have been scored, ranked, and enriched specifically for Cambrian sales outreach. Every facility in this list holds an EPA NPDES permit and/or files Toxics Release Inventory (TRI) reports — meaning they are potential customers for Cambrian's treatment technology.</p>
+  <p>The Cambrian NPDES Leads Pipeline is a <strong>curated database of 44,594 qualified US industrial wastewater facilities</strong> (filtered from a raw universe of 1,148,393 NPDES/TRI records) that have been scored, ranked, and enriched specifically for Cambrian sales outreach. Every facility holds an EPA NPDES permit and/or files Toxics Release Inventory (TRI) reports — meaning they are potential customers for Cambrian's treatment technology.</p>
   <p>The data combines <strong>9 federal and commercial data sources</strong>, verified market intelligence, and proprietary scoring to answer one question: <em>"Which facilities have the strongest business case for Cambrian's treatment system?"</em></p>
   <p>The pipeline exports <strong>197 columns per facility</strong> across <strong>34 segment CSVs</strong> (20 territory/master segments + 14 BDR action lists). Every single facility has a pre-built <code>bdr_call_script</code> — a Sandler-methodology research brief with facility context, contacts, compliance signals, and discovery questions ready for outreach.</p>
 
@@ -171,8 +171,8 @@
 
   <div class="stat-row">
     <div class="stat-card">
-      <div class="number">1,148,393</div>
-      <div class="label">Total Facilities in DuckDB</div>
+      <div class="number">44,594</div>
+      <div class="label">Qualified Facilities</div>
     </div>
     <div class="stat-card green">
       <div class="number">34,819</div>
@@ -634,7 +634,7 @@
   </div>
 
   <div class="callout">
-    <strong>Distribution note:</strong> The vast majority of the 1,148,393 facilities in DuckDB do not meet export filters (flow > 0, NPDES or TRI identified, quality filters passed). The ~252K exported rows are the subset that passed all quality gates.
+    <strong>Distribution note:</strong> The raw NPDES/TRI universe contains 1,148,393 facilities in DuckDB. After applying the combined quality filter (flow > 0, NPDES or TRI identified, excluded industries removed, quality gates passed), 44,594 pass as qualified facilities ready for BDR outreach.
   </div>
 </div>
 
@@ -891,7 +891,7 @@
   </table>
 
   <h3>BDR Call Script Column <span class="badge-inline badge-green">Every Facility</span></h3>
-  <p>The <code>bdr_call_script</code> column is a pre-generated Sandler-methodology natural language brief per facility. <strong>Every single facility (1,148,393) has a call script.</strong> It includes:</p>
+  <p>The <code>bdr_call_script</code> column is a pre-generated Sandler-methodology natural language brief per facility. <strong>Every qualified facility (44,594) has a call script.</strong> It includes:</p>
   <ul>
     <li>Facility context (name, location, owner, flow, contaminants, treatment type)</li>
     <li>Named contacts with emails from FRS and TRI</li>
@@ -1144,7 +1144,7 @@
   <p>A flag indicating the facility is within 100km of the US-Mexico border. Comes from the FRS National Single file. Relevant for border region environmental compliance programs and bilateral water management initiatives.</p>
 
   <h3>Q: What is the <code>bdr_call_script</code>?</h3>
-  <p>A pre-generated Sandler-methodology natural language research brief for every facility (1,148,393 total — 100% coverage). It includes facility context, named contacts with emails, compliance signals with dollar amounts, and 4-6 tailored discovery questions. See Section 10 for the Molson Coors example.</p>
+  <p>A pre-generated Sandler-methodology natural language research brief for every qualified facility (44,594 total — 100% coverage). It includes facility context, named contacts with emails, compliance signals with dollar amounts, and 4-6 tailored discovery questions. See Section 10 for the Molson Coors example.</p>
 
   <h3>Q: What if a facility is already in HubSpot?</h3>
   <p>The <code>hubspot_active_deal_flag</code> column will be <code>1</code>. Check <code>hubspot_deal_name</code>, <code>hubspot_deal_stage</code>, and <code>hubspot_deal_owner</code> to see who is working it. If the deal is stale (no activity in 60+ days), coordinate with the deal owner. If it is actively being worked, skip it.</p>
@@ -1234,7 +1234,7 @@
 
 <div class="footer">
   Cambrian NPDES Pipeline V12 — Data Guide for BDRs — February 2026<br>
-  1,148,393 facilities &middot; 197 columns &middot; 34 segment CSVs &middot; 14 BDR action lists<br>
+  44,594 qualified facilities &middot; 197 columns &middot; 34 segment CSVs &middot; 14 BDR action lists<br>
   Sandler Selling Methodology integrated. For questions about the data, methodology, or scoring, contact the data team.
 </div>
 
