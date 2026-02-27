@@ -1180,44 +1180,387 @@
 <!-- 16. DATA DICTIONARY -->
 <div class="section" id="dictionary">
   <h2>16. Data Dictionary / Column Legend</h2>
-  <p>The pipeline exports <strong>197 columns per CSV</strong> (385 columns internally in DuckDB including intermediate/diagnostic fields). For the complete column-by-column reference with types, examples, definitions, and use cases, see:</p>
+  <p>Complete reference for all <strong>197 columns across 22 categories</strong> exported per CSV (385 columns internally in DuckDB including intermediate/diagnostic fields). Each entry shows the column name, data type, and definition. Source: <code>NPDES_Column_Legend_V12.md</code>.</p>
 
-  <div class="callout green">
-    <strong>Full reference:</strong> <code>NPDES_Column_Legend_V12.md</code> — 197 columns organized by category with data types, example values, plain-language definitions, and BDR use cases.
+  <div class="callout">
+    <strong>197 columns &middot; 22 categories &middot; Pipeline V12 &middot; February 2026</strong><br>
+    Version history: V9 (123 cols) &rarr; V10 (175) &rarr; V11 (181) &rarr; V12 (197). Types: VARCHAR = text, INTEGER = whole number, DOUBLE = decimal, DATE = date, DECIMAL(18,2) = currency.
   </div>
 
-  <h3>Column Count by Category (197 total)</h3>
+  <!-- 1. Identity -->
+  <h3>1. Identity (7 columns)</h3>
   <table>
-    <thead><tr><th>Category</th><th>Columns</th><th>Key Fields</th></tr></thead>
+    <thead><tr><th>Column</th><th>Type</th><th>Definition</th></tr></thead>
     <tbody>
-      <tr><td><strong>Identity</strong></td><td>7</td><td><code>lead_id</code>, <code>npdes_id</code>, <code>frs_registry_id</code>, <code>facility_name</code>, <code>deal_name</code></td></tr>
-      <tr><td><strong>Location</strong></td><td>10</td><td><code>city</code>, <code>state_code</code>, <code>zip</code>, <code>latitude_resolved</code>, <code>frs_county</code></td></tr>
-      <tr><td><strong>Industry</strong></td><td>9</td><td><code>primary_naics_code</code>, <code>food_bev_flag</code>, <code>cambrian_target_industry_tag</code></td></tr>
-      <tr><td><strong>Flow</strong></td><td>10</td><td><code>flow_mgd</code>, <code>flow_source</code>, <code>flow_confidence_flag</code>, <code>flow_100k_gpd_flag</code></td></tr>
-      <tr><td><strong>Contact — Resolved</strong></td><td>5</td><td><code>contact_name_resolved</code>, <code>contact_email_resolved</code>, <code>contact_source</code></td></tr>
-      <tr><td><strong>Contact — Individual Sources</strong></td><td>11</td><td><code>frs_contact_name/email/phone/title</code>, <code>tri_contact_*</code>, <code>enrichment_contact_*</code></td></tr>
-      <tr><td><strong>Ownership</strong></td><td>8</td><td><code>parent_company_resolved</code>, <code>frs_org_type</code>, <code>frs_org_duns</code></td></tr>
-      <tr><td><strong>Compliance</strong></td><td>20</td><td><code>snc_flag</code>, <code>active_federal_case_flag</code>, <code>case_total_penalties_usd</code>, violations</td></tr>
-      <tr><td><strong>Permit</strong></td><td>9</td><td><code>permit_status_code</code>, <code>permit_expiring_12m_flag</code>, <code>permit_months_to_expiry</code></td></tr>
-      <tr><td><strong>Treatment Signals</strong></td><td>11</td><td><code>has_nutrients</code>, <code>has_organics_solids</code>, <code>has_metals</code>, <code>treatment_technology_inferred</code></td></tr>
-      <tr><td><strong>Discharge</strong></td><td>3</td><td><code>discharge_point_count</code>, <code>data_quality_tier</code></td></tr>
-      <tr><td><strong>Municipality Linkage</strong></td><td>3</td><td><code>linked_municipality_count</code>, <code>linked_municipalities</code></td></tr>
-      <tr><td><strong>HydroWASTE</strong></td><td>6</td><td>WWTP matching, treatment level, capacity utilization, coastal proximity</td></tr>
-      <tr><td><strong>Market &amp; Water Stress</strong></td><td>30</td><td><code>hot_zone_flag</code>, <code>aqueduct_bws_label</code>, <code>mr_water_rate_kgal</code>, <code>market_surcharge_flag</code></td></tr>
-      <tr><td><strong>TRI &amp; Sustainability</strong></td><td>9</td><td><code>tri_source_reduction_flag</code>, <code>potw_dependent_flag</code>, <code>tri_total_releases_lbs</code></td></tr>
-      <tr><td><strong>Market Intelligence</strong></td><td>3</td><td><code>hot_zone_gtm_play</code>, state regulatory profiles</td></tr>
-      <tr><td><strong>CapEx</strong></td><td>5</td><td><code>implied_growth_capex</code>, <code>capex_qualification_status</code>, <code>required_rate_for_qualification</code></td></tr>
-      <tr><td><strong>Scoring</strong></td><td>7</td><td><code>lead_score_0_100</code>, <code>gate</code>, <code>contaminant_score</code>, <code>regulatory_score</code></td></tr>
-      <tr><td><strong>Metadata</strong></td><td>5</td><td><code>pipeline_version</code>, <code>pipeline_run_date</code>, <code>export_segment</code></td></tr>
-      <tr><td><strong>Summary</strong></td><td>4</td><td><code>cambrian_fit_summary</code>, <code>bdr_call_script</code>, <code>territory</code>, <code>territory_rep</code></td></tr>
-      <tr><td><strong>V11 New</strong></td><td>6</td><td><code>hubspot_active_deal_flag</code>, <code>hubspot_deal_name/stage/owner</code>, <code>bdr_call_script</code>, <code>mr_rate_source</code></td></tr>
-      <tr><td><strong>V12 New</strong></td><td>16</td><td><code>frs_naics_code/desc</code>, <code>frs_sic_code/desc</code>, <code>frs_mailing_*</code>, <code>case_fed/state/sep/compliance_*_amt</code>, <code>frs_alternative_names</code>, <code>frs_interest_types</code>, <code>frs_pgm_sys_acrnms</code>, <code>us_mexico_border_ind</code></td></tr>
+      <tr><td><code>lead_id</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Pipeline-generated unique identifier. Format: <code>NPDES_{npdes_id}</code>, <code>FRS_{frs_registry_id}</code>, or <code>ENRICH_{seq}</code>. Primary key for HubSpot dedup and CRM record matching.</td></tr>
+      <tr><td><code>npdes_id</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>EPA National Pollutant Discharge Elimination System permit identifier. Cross-reference with EPA ECHO; unique per discharge permit.</td></tr>
+      <tr><td><code>frs_registry_id</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>EPA Facility Registry Service (FRS) unique identifier, linking across all EPA programs. Master join key for FRS contact, org, and NAICS/SIC enrichment.</td></tr>
+      <tr><td><code>facility_name</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Official facility name as reported in ICIS-NPDES or FRS. Display name in CRM sequences and call scripts.</td></tr>
+      <tr><td><code>facility_name_standardized</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Upper-cased, trimmed, standardized facility name used for dedup matching. Fuzzy-match dedup against HubSpot deals and enrichment CSVs.</td></tr>
+      <tr><td><code>deal_name</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Pre-formatted deal name: <code>(ST) Facility Name (City)</code>. Ready-to-paste HubSpot deal name; saves BDR formatting time.</td></tr>
+      <tr><td><code>facility_type_code</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>ICIS facility type classification (e.g., POTW, NON-POTW, FEDERAL). Segment leads by facility type.</td></tr>
     </tbody>
-    <tfoot>
-      <tr style="background:var(--blue-light);font-weight:700;"><td>Total</td><td>197</td><td></td></tr>
-    </tfoot>
   </table>
 
+  <!-- 2. Location -->
+  <h3>2. Location (10 columns)</h3>
+  <table>
+    <thead><tr><th>Column</th><th>Type</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td><code>location_address</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Street address of the facility as reported in ICIS-NPDES. Geo-validation, mail campaigns, and field visit planning.</td></tr>
+      <tr><td><code>city</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>City where the facility is located. Territory assignment; city-level water rate matching.</td></tr>
+      <tr><td><code>state_code</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Two-letter US state or territory code. Territory routing, state regulatory lookups, water stress joins.</td></tr>
+      <tr><td><code>zip</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Five-digit ZIP code (may include +4 extension). Geo-targeting, regional rep assignment, and mailing.</td></tr>
+      <tr><td><code>latitude_resolved</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>Best-available latitude via cascade: ICIS &gt; outfall &gt; discharge point &gt; enrichment. Map plotting; proximity analysis.</td></tr>
+      <tr><td><code>longitude_resolved</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>Best-available longitude via same cascade as latitude. Map plotting; coastal discharge and border-proximity flags.</td></tr>
+      <tr><td><code>frs_epa_region</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>EPA administrative region number (01-10) from FRS. Regional sales strategy; EPA enforcement patterns.</td></tr>
+      <tr><td><code>frs_huc_code</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Hydrologic Unit Code from FRS; identifies the watershed. Watershed-based outreach (e.g., Chesapeake Bay nutrient campaigns).</td></tr>
+      <tr><td><code>frs_county</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>County name from FRS facility detail. County-level permit and enforcement trend analysis.</td></tr>
+      <tr><td><code>frs_city</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>City name from FRS registry (may differ from ICIS city). Cross-validation of ICIS city; mailing address fallback.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 3. Industry -->
+  <h3>3. Industry (9 columns)</h3>
+  <table>
+    <thead><tr><th>Column</th><th>Type</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td><code>primary_naics_code</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Best-available 6-digit NAICS code via cascade: ICIS &gt; TRI &gt; FRS &gt; SIC crosswalk. Industry segmentation; F&amp;B targeting (311xxx prefix).</td></tr>
+      <tr><td><code>primary_naics_desc</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Human-readable NAICS description from Census lookup. Display in CRM; BDR call context.</td></tr>
+      <tr><td><code>naics_source</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Provenance of the NAICS code: <code>icis</code>, <code>tri</code>, <code>frs</code>, <code>sic_crosswalk</code>, or <code>enrichment</code>. Data quality signal; <code>icis</code> is highest confidence.</td></tr>
+      <tr><td><code>primary_sic_code</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Best-available 4-digit SIC code via cascade: ICIS &gt; TRI &gt; FRS &gt; NAICS crosswalk. Legacy industry classification.</td></tr>
+      <tr><td><code>primary_sic_desc</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Human-readable SIC description. BDR context for industry vertical.</td></tr>
+      <tr><td><code>food_bev_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if NAICS/SIC/keyword indicates food &amp; beverage manufacturing. Core Cambrian ICP filter; drives F&amp;B segment CSVs.</td></tr>
+      <tr><td><code>cambrian_target_industry_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if NAICS falls within Cambrian's broader target verticals (F&amp;B, chemical, paper, etc.). Wider ICP filter beyond F&amp;B-only.</td></tr>
+      <tr><td><code>cambrian_target_industry_tag</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Human-readable Cambrian vertical tag (e.g., Meat Processing, Dairy, Beverage, Chemical). Segment naming in BDR lists.</td></tr>
+      <tr><td><code>food_bev_focus_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if facility is in the high-priority F&amp;B focus subset (keyword + NAICS confirmed). Tier-1 F&amp;B outreach.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 4. Flow -->
+  <h3>4. Flow (10 columns)</h3>
+  <table>
+    <thead><tr><th>Column</th><th>Type</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td><code>flow_mgd</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>Best-available flow in millions of gallons per day (MGD). Derived via COALESCE cascade: actual avg &gt; design &gt; DMR avg &gt; DMR max &gt; general permit &gt; outfall &gt; enrichment. Core qualification metric.</td></tr>
+      <tr><td><code>flow_source</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Provenance of flow_mgd: <code>icis_actual</code>, <code>icis_design</code>, <code>dmr_avg</code>, <code>dmr_max</code>, <code>general_permit</code>, <code>outfall_design</code>, <code>enrichment</code>, <code>unknown</code>.</td></tr>
+      <tr><td><code>flow_confidence_flag</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Qualitative confidence: <code>high</code> (actual/DMR avg), <code>medium</code> (design/DMR max), <code>low</code> (general/enrichment), <code>none</code>.</td></tr>
+      <tr><td><code>flow_100k_gpd_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if flow_mgd &ge; 0.1 (i.e., &ge; 100,000 GPD). Cambrian minimum viable flow threshold; gates lead scoring.</td></tr>
+      <tr><td><code>permit_design_flow_mgd</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>ICIS permitted design flow capacity in MGD. Shows maximum permitted capacity vs. actual usage.</td></tr>
+      <tr><td><code>permit_actual_avg_flow_mgd</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>ICIS reported average actual flow in MGD. Best single flow metric; represents real-world discharge volume.</td></tr>
+      <tr><td><code>dmr_avg_flow_mgd</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>Average flow from Discharge Monitoring Reports (DMR) in MGD. Validated self-reported flow; strong data quality.</td></tr>
+      <tr><td><code>dmr_max_flow_mgd</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>Maximum flow from DMR in MGD. Peak discharge indicator; useful for capacity planning discussions.</td></tr>
+      <tr><td><code>enrichment_flow_mgd</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>Flow from third-party enrichment sources in MGD. Fallback when EPA data is unavailable.</td></tr>
+      <tr><td><code>general_permit_design_flow_mgd</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>Design flow for facilities under a general permit in MGD. Small-facility flow; typically lower confidence.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 5. Contact - Resolved -->
+  <h3>5. Contact &mdash; Resolved (5 columns)</h3>
+  <table>
+    <thead><tr><th>Column</th><th>Type</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td><code>contact_name_resolved</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Best-available contact name via cascade: FRS National &gt; enrichment &gt; TRI. Primary BDR call/email target.</td></tr>
+      <tr><td><code>contact_email_resolved</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Best-available email via same cascade. Direct outreach; email sequence enrollment.</td></tr>
+      <tr><td><code>contact_phone_resolved</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Best-available phone via same cascade. Cold call target; phone-first outreach sequences.</td></tr>
+      <tr><td><code>contact_source</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Provenance of the resolved contact: <code>frs_national</code>, <code>enrichment</code>, or <code>tri</code>. Confidence indicator.</td></tr>
+      <tr><td><code>contact_complete_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if contact has name AND at least one of email or phone. Filter for "actionable contact" BDR lists.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 6. Contact - Individual Sources -->
+  <h3>6. Contact &mdash; Individual Sources (11 columns)</h3>
+  <table>
+    <thead><tr><th>Column</th><th>Type</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td><code>frs_contact_name</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Contact name from FRS National registry. Most authoritative source (641K+ emails nationally).</td></tr>
+      <tr><td><code>frs_contact_email</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Contact email from FRS National. Primary email for outreach sequences.</td></tr>
+      <tr><td><code>frs_contact_phone</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Contact phone from FRS National. Phone outreach; complements email.</td></tr>
+      <tr><td><code>frs_contact_title</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Contact job title from FRS National. Identify decision-makers vs. operators for call scripts.</td></tr>
+      <tr><td><code>frs_contact_affiliation</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Organization affiliation of the FRS contact. Verify contact is current; match to parent company.</td></tr>
+      <tr><td><code>tri_contact_name</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Contact name from TRI (Toxic Release Inventory) reporting. Fallback contact; typically the TRI reporting officer.</td></tr>
+      <tr><td><code>tri_contact_email</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Contact email from TRI. Alternative email when FRS is blank.</td></tr>
+      <tr><td><code>tri_contact_phone</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Contact phone from TRI. Fallback phone number for outreach.</td></tr>
+      <tr><td><code>enrichment_contact_name</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Contact name from third-party enrichment. Supplementary contact; lower confidence than FRS/TRI.</td></tr>
+      <tr><td><code>enrichment_contact_email</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Email from enrichment source. Backup email when government sources are blank.</td></tr>
+      <tr><td><code>enrichment_contact_phone</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Phone from enrichment source. Backup phone for outreach.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 7. Ownership -->
+  <h3>7. Ownership (8 columns)</h3>
+  <table>
+    <thead><tr><th>Column</th><th>Type</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td><code>parent_company_resolved</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Best-available parent company via cascade: FRS parent &gt; FRS owner org &gt; enrichment &gt; TRI. Multi-site account mapping; enterprise deal identification.</td></tr>
+      <tr><td><code>frs_org_type</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>FRS organization type (Private, Public, Federal, State, Tribal, etc.). Segment by ownership; private facilities are core ICP.</td></tr>
+      <tr><td><code>frs_federal_facility_flag</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>FRS flag indicating if the facility is federally owned. Exclude federal facilities or route to government sales track.</td></tr>
+      <tr><td><code>frs_federal_agency</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>If federal, the owning agency (DOD, DOE, EPA, etc.). Niche targeting for federal water compliance contracts.</td></tr>
+      <tr><td><code>frs_tribal_land_flag</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>FRS flag indicating if the facility is on tribal land. Compliance nuances; tribal sovereignty affects permitting.</td></tr>
+      <tr><td><code>frs_org_duns</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>D-U-N-S number from FRS organization record. Enterprise dedup via D&amp;B; parent-child entity resolution.</td></tr>
+      <tr><td><code>tri_parent_company_name</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Parent company name as self-reported on TRI Form R. Cross-reference with FRS parent; TRI may have newer data.</td></tr>
+      <tr><td><code>tri_std_parent</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>EPA-standardized parent company name from TRI (normalized). Best name for multi-site rollup and enterprise targeting.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 8. Compliance -->
+  <h3>8. Compliance (20 columns)</h3>
+  <table>
+    <thead><tr><th>Column</th><th>Type</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td><code>snc_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if facility is in Significant Non-Compliance (SNC) status. Top urgency signal; opens "hair on fire" BDR conversation.</td></tr>
+      <tr><td><code>qncr_hlrnc_quarters_8q</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Number of quarters (out of last 8) the facility was in high-level reporting non-compliance. Sustained non-compliance pattern.</td></tr>
+      <tr><td><code>effluent_violation_count_24m</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Count of effluent limit violations in the past 24 months. Quantifies discharge problems; &ge;10 triggers BDR Tier 1.</td></tr>
+      <tr><td><code>formal_enforcement_count_60m</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Count of formal enforcement actions in the past 60 months. Regulatory pressure indicator; drives compliance urgency pitch.</td></tr>
+      <tr><td><code>formal_penalties_60m</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>Total formal penalty dollars assessed in the past 60 months. Dollar-amount proof point for cost-of-inaction messaging.</td></tr>
+      <tr><td><code>active_federal_case_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if there is an active federal enforcement case against the facility. Strongest compliance urgency signal.</td></tr>
+      <tr><td><code>active_case_count</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Number of currently active enforcement cases. Quantifies active legal exposure.</td></tr>
+      <tr><td><code>case_total_penalties_usd</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>Total penalties assessed across all linked enforcement cases (USD). Enterprise-level penalty burden; ROI conversation anchor.</td></tr>
+      <tr><td><code>case_status</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Status of the primary enforcement case (Open, Closed, Settled, etc.). Determines if enforcement pressure is current or historical.</td></tr>
+      <tr><td><code>case_pollutant_list</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Comma-separated pollutants cited in enforcement cases. Tailors Cambrian solution pitch to specific contaminants.</td></tr>
+      <tr><td><code>total_inspection_count_24m</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Total EPA inspections in the past 24 months. Regulatory attention signal; frequent inspections = higher risk.</td></tr>
+      <tr><td><code>permit_expiring_12m_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if the NPDES permit expires within the next 12 months. Time-sensitive outreach trigger; renewal = upgrade window.</td></tr>
+      <tr><td><code>permit_months_to_expiry</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Months remaining until permit expiration. Prioritize by urgency; &lt;6 months = immediate outreach.</td></tr>
+      <tr><td><code>effluent_exceedence_pct_avg_24m</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>Average effluent exceedance percentage over the past 24 months. Quantifies how far over limits the facility runs on average.</td></tr>
+      <tr><td><code>effluent_exceedence_pct_max_24m</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>Maximum single effluent exceedance percentage in 24 months. Worst-case violation severity; powerful in call scripts.</td></tr>
+      <tr><td><code>effluent_rnc_open_count</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Count of open Reportable Non-Compliance (RNC) events for effluent. Active non-compliance events requiring resolution.</td></tr>
+      <tr><td><code>cs_violation_count_24m</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Compliance schedule violation count in 24 months. Missing compliance deadlines; signals operational dysfunction.</td></tr>
+      <tr><td><code>ps_violation_count_24m</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Permit schedule violation count in 24 months. Permit milestone misses; regulatory risk indicator.</td></tr>
+      <tr><td><code>se_violation_count_24m</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Single-event violation count in 24 months. Discrete violation incidents (spills, bypasses, etc.).</td></tr>
+      <tr><td><code>informal_enforcement_count_60m</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Count of informal enforcement actions (warning letters, NOVs) in 60 months. Precursors to formal action; early-warning sales signal.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 9. Permit -->
+  <h3>9. Permit (9 columns)</h3>
+  <table>
+    <thead><tr><th>Column</th><th>Type</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td><code>permit_status_code</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>ICIS permit status: EFF (Effective), ADC (Admin Continued), PND (Pending), TRM (Terminated), EXP (Expired). Filter out terminated permits.</td></tr>
+      <tr><td><code>permit_type_code</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>ICIS permit type: NPD (Individual NPDES), GPC (General Permit Coverage), etc. Segment by permit type.</td></tr>
+      <tr><td><code>major_minor_status_flag</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>EPA classification: MAJ (Major) or MIN (Minor) discharger. Major dischargers have more data and higher regulatory scrutiny.</td></tr>
+      <tr><td><code>permit_effective_date</code></td><td><span class="badge-inline badge-orange">DATE</span></td><td>Date the current permit became effective. Permit age; older permits may have outdated limits.</td></tr>
+      <tr><td><code>permit_expiration_date</code></td><td><span class="badge-inline badge-orange">DATE</span></td><td>Date the current permit expires. Drives permit_expiring_12m_flag; renewal timing for outreach.</td></tr>
+      <tr><td><code>permit_issue_date</code></td><td><span class="badge-inline badge-orange">DATE</span></td><td>Date the permit was issued by the permitting authority. Historical context for permit review cadence.</td></tr>
+      <tr><td><code>permit_component_count</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Number of distinct permit components (limits, monitoring requirements). Complexity indicator; more components = more compliance burden.</td></tr>
+      <tr><td><code>permit_component_types</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Comma-separated list of permit component types. Tailors pitch to specific permit requirements.</td></tr>
+      <tr><td><code>general_permit_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if the facility is covered under a general permit. General permits typically = smaller facilities with less data.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 10. Treatment Signals -->
+  <h3>10. Treatment Signals (11 columns)</h3>
+  <table>
+    <thead><tr><th>Column</th><th>Type</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td><code>has_nutrients</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if DMR parameters include nitrogen, phosphorus, or ammonia. Nutrient removal is a core Cambrian capability; direct fit signal.</td></tr>
+      <tr><td><code>has_organics_solids</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if DMR parameters include BOD, COD, TSS, or similar organics/solids. Organic load treatment opportunity; F&amp;B primary contaminant profile.</td></tr>
+      <tr><td><code>has_salinity</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if DMR parameters include TDS, chloride, or conductivity. Salinity treatment need; relevant for inland discharge reuse.</td></tr>
+      <tr><td><code>has_metals</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if DMR parameters include heavy metals (Cd, Cr, Cu, Pb, Zn, etc.). Metals treatment add-on opportunity; regulatory hot button.</td></tr>
+      <tr><td><code>has_toxicity</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if DMR parameters include whole effluent toxicity (WET) testing. WET failures trigger enforcement; strong pain-point signal.</td></tr>
+      <tr><td><code>has_ph</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if DMR parameters include pH monitoring. pH excursions are common violations; easy compliance win.</td></tr>
+      <tr><td><code>distinct_parameter_count</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Number of distinct DMR parameters monitored at this facility. Complexity proxy; &gt;15 parameters suggests advanced treatment needs.</td></tr>
+      <tr><td><code>biosolids_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if the facility produces or manages biosolids. Biosolids management is a separate revenue opportunity.</td></tr>
+      <tr><td><code>biosolids_violation_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if the facility has biosolids-related violations. Compliance pressure on biosolids handling; niche pitch angle.</td></tr>
+      <tr><td><code>treatment_technology_inferred</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>NAICS-based inference of likely treatment technology in use. Pre-call intelligence; informs technical conversation topics.</td></tr>
+      <tr><td><code>treatment_confidence</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Confidence level of the treatment inference: <code>high</code>, <code>medium</code>, <code>low</code>. Qualify the inference; high = strong NAICS-treatment correlation.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 11. Discharge -->
+  <h3>11. Discharge (3 columns)</h3>
+  <table>
+    <thead><tr><th>Column</th><th>Type</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td><code>discharge_point_count</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Number of distinct outfall/discharge points on the permit. Multiple outfalls suggest complex operations; higher deal value.</td></tr>
+      <tr><td><code>outfall_water_body</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Name of the receiving water body for the primary outfall. Watershed context for regulatory narrative (e.g., impaired waters).</td></tr>
+      <tr><td><code>tri_facility_id</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>TRI Facility ID linking to Toxic Release Inventory records. Join key for TRI data; identifies chemical-using industrial facilities.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 12. Municipality Linkage -->
+  <h3>12. Municipality Linkage (3 columns)</h3>
+  <table>
+    <thead><tr><th>Column</th><th>Type</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td><code>linked_municipality_count</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Number of municipal POTW facilities linked to this industrial discharger. POTW dependency indicator; more links = more pretreatment pressure.</td></tr>
+      <tr><td><code>linked_municipalities</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Pipe-delimited list of linked municipal treatment plant names and NPDES IDs. Identifies which POTWs enforce pretreatment on this facility.</td></tr>
+      <tr><td><code>primary_municipality_npdes_id</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>NPDES ID of the primary linked municipal treatment plant. Cross-reference to POTW for surcharge and pretreatment intelligence.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 13. HydroWASTE -->
+  <h3>13. HydroWASTE (6 columns)</h3>
+  <table>
+    <thead><tr><th>Column</th><th>Type</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td><code>hw_matched_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if the facility was geo-matched to a HydroWASTE WWTP record. Data enrichment signal; HydroWASTE provides global WWTP attributes.</td></tr>
+      <tr><td><code>hw_wwtp_name</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>HydroWASTE matched WWTP name. Cross-reference for capacity and treatment level intelligence.</td></tr>
+      <tr><td><code>hw_treatment_level</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Treatment level from HydroWASTE: Primary, Secondary, Advanced, etc. Identifies upgrade potential (Secondary to Advanced = Cambrian fit).</td></tr>
+      <tr><td><code>hw_capacity_utilization</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>Ratio of actual flow to design capacity (0.0 to 1.0+). &ge;0.85 signals capacity stress; triggers BDR Tier 3 (Timing Right).</td></tr>
+      <tr><td><code>hw_discharge_mgd</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>Reported discharge volume from HydroWASTE in MGD. Alternative flow data point; cross-validates EPA flow data.</td></tr>
+      <tr><td><code>hw_coastal_10km</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if the facility discharges within 10 km of the coast. Coastal discharge = heightened environmental sensitivity and regulation.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 14. Market & Water Stress -->
+  <h3>14. Market &amp; Water Stress (30 columns)</h3>
+  <table>
+    <thead><tr><th>Column</th><th>Type</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td><code>aqueduct_bws_label</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>WRI Aqueduct baseline water stress label: Low, Low-Medium, Medium-High, High, Extremely High. Headline water stress indicator.</td></tr>
+      <tr><td><code>aqueduct_stress_increasing_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if future BAU 2050 stress score exceeds current score by &gt;20%. Forward-looking urgency signal.</td></tr>
+      <tr><td><code>aqueduct_bws_score_avg</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>Average baseline water stress score (1-5 scale) from Aqueduct. Numeric stress metric for scoring model.</td></tr>
+      <tr><td><code>aqueduct_bws_score_max</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>Maximum baseline water stress score across the state. Worst-case stress in the region.</td></tr>
+      <tr><td><code>aqueduct_bws_category</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Categorical bucket derived from bws_score: Low through Extremely High. Human-friendly stress label for dashboards.</td></tr>
+      <tr><td><code>aqueduct_future_bws_bau50_avg</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>Projected 2050 water stress score under business-as-usual scenario. Climate risk narrative.</td></tr>
+      <tr><td><code>aqueduct_seasonal_variability</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>Seasonal variability index from Aqueduct (0-1 scale). High variability = drought/flood risk; operational disruption angle.</td></tr>
+      <tr><td><code>hot_zone_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if the facility's state is classified as a regulatory/market hot zone. Pre-qualified territory signal.</td></tr>
+      <tr><td><code>hot_zone_tier</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Hot zone severity tier: Tier 1 (most urgent) through Tier 3. Prioritize BDR effort by tier.</td></tr>
+      <tr><td><code>hot_zone_gtm_play</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>GTM play recommendation for this hot zone. Pre-built talk track for BDR calls.</td></tr>
+      <tr><td><code>high_cost_market_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if the market has above-average water/sewer costs. Economic argument: high costs = stronger ROI for water reuse.</td></tr>
+      <tr><td><code>water_rate_per_kgal</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>State-level water rate in dollars per thousand gallons. Baseline cost data for ROI modeling.</td></tr>
+      <tr><td><code>sewer_rate_per_kgal</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>State-level sewer/wastewater rate in dollars per thousand gallons. Sewer costs often exceed water; key for discharge cost arguments.</td></tr>
+      <tr><td><code>total_cost_index_per_kgal</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>Combined water + sewer cost index in dollars per thousand gallons. Single metric for "total cost of water" economic pitch.</td></tr>
+      <tr><td><code>market_surcharge_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if the local market has industrial surcharges (BOD, TSS, etc.). Surcharges = direct cost savings opportunity.</td></tr>
+      <tr><td><code>mr_blended_rate_per_gal</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>City-matched blended water+sewer rate in dollars per gallon. Core CapEx qualification input; drives Riverbank threshold math.</td></tr>
+      <tr><td><code>mr_water_rate_kgal</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>City-matched water rate in $/kgal from market rates database. More precise than state-level rate.</td></tr>
+      <tr><td><code>mr_sewer_rate_kgal</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>City-matched sewer rate in $/kgal from market rates database. Sewer cost is typically 60-70% of total water cost burden.</td></tr>
+      <tr><td><code>mr_has_surcharge_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if city-matched rate data includes industrial surcharges. Surcharge savings quantification for proposals.</td></tr>
+      <tr><td><code>mr_city_matched_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if the facility's city was successfully matched to the market rates database. Data confidence: 1 = exact city match.</td></tr>
+      <tr><td><code>market_surcharge_pack</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Detailed surcharge rate breakdown from city-matched data (e.g., BOD: $0.35/lb, TSS: $0.25/lb). BDR ammunition for surcharge savings pitch.</td></tr>
+      <tr><td><code>market_scarcity_note</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>City-level water scarcity note from market intelligence. Conversation opener; ties facility to local water scarcity narrative.</td></tr>
+      <tr><td><code>market_service_area</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Name of the local water/sewer service authority. Know who sets rates; reference in proposals and call scripts.</td></tr>
+      <tr><td><code>chesapeake_bay_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if the facility is in the Chesapeake Bay watershed (VA, MD, PA, DC, DE, WV, NY). Chesapeake Bay nutrient TMDLs = tightest nutrient limits.</td></tr>
+      <tr><td><code>state_regulatory_stringency_tier</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>State regulatory stringency classification (Tier 1 = strictest to Tier 4 = most lenient). Contextualizes compliance urgency.</td></tr>
+      <tr><td><code>tight_regulatory_state_flag</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>String flag: "1" if the state is classified as having tight/strict regulations. Quick filter for high-regulatory-pressure territories.</td></tr>
+      <tr><td><code>state_regulatory_change_flag</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>String flag: "1" if the state has pending or recently enacted regulatory changes. Timing signal; new regulations = upgrade catalyst.</td></tr>
+      <tr><td><code>state_regulatory_focus</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Key regulatory focus areas for this state. Tailors pitch: "Your state is tightening nutrient limits."</td></tr>
+      <tr><td><code>state_regulatory_summary</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Narrative summary of the state's regulatory landscape. Pre-built context paragraph for BDR call preparation.</td></tr>
+      <tr><td><code>aqueduct_water_stress_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if Aqueduct BWS score indicates High or Extremely High stress. Simple boolean for scoring model and dashboard filtering.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 15. TRI & Sustainability -->
+  <h3>15. TRI &amp; Sustainability (9 columns)</h3>
+  <table>
+    <thead><tr><th>Column</th><th>Type</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td><code>tri_only_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if the facility was sourced exclusively from TRI (no NPDES permit found). Identifies indirect dischargers without permits.</td></tr>
+      <tr><td><code>potw_dependent_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if the facility discharges to a POTW (indirect discharger). Core market signal: POTW-dependent = pretreatment upgrade opportunity.</td></tr>
+      <tr><td><code>tri_source_reduction_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if the facility reported source reduction activities in TRI. "Open to change" signal; already investing in pollution prevention.</td></tr>
+      <tr><td><code>tri_source_reduction_certified_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if source reduction activities are certified (higher commitment level). Stronger openness signal.</td></tr>
+      <tr><td><code>tri_pollution_prevention_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if the facility has active pollution prevention (P2) programs in TRI. Sustainability-forward; receptive to treatment innovations.</td></tr>
+      <tr><td><code>sustainability_reporting_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if the facility or parent company has public sustainability reporting. ESG narrative alignment.</td></tr>
+      <tr><td><code>tri_total_waste_managed_lbs</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>Total pounds of waste managed annually as reported in TRI. Scale indicator; high waste = high treatment opportunity value.</td></tr>
+      <tr><td><code>tri_total_potw_transfer_lbs</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>Total pounds of waste transferred to POTWs annually from TRI. Quantifies POTW dependency; &gt;10K lbs triggers BDR POTW Heavy list.</td></tr>
+      <tr><td><code>tri_uses_water_treatment_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if TRI reports indicate the facility uses on-site water treatment. Already treating water; upgrade/replacement opportunity.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 16. Market Intelligence -->
+  <h3>16. Market Intelligence (3 columns)</h3>
+  <table>
+    <thead><tr><th>Column</th><th>Type</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td><code>mi_technical_buyer</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>State-level archetype of the technical buyer role for this market. Guides who to ask for in cold calls.</td></tr>
+      <tr><td><code>mi_economic_buyer</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>State-level archetype of the economic decision-maker. Identifies the budget authority; shapes proposal routing.</td></tr>
+      <tr><td><code>mi_best_entry_event</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Recommended trigger event for initial outreach in this market. Timing the first call around a natural decision point.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 17. CapEx -->
+  <h3>17. CapEx (5 columns)</h3>
+  <table>
+    <thead><tr><th>Column</th><th>Type</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td><code>implied_growth_capex</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>Estimated annual revenue potential (flow_gpd &times; 365 &times; blended_rate &times; EBITDA_margin &times; IRR_multiple). Riverbank financial qualification metric.</td></tr>
+      <tr><td><code>capex_qualification_status</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Classification: <code>QUALIFIED</code>, <code>NEAR_QUALIFIED</code>, <code>BELOW_THRESHOLD</code>, or <code>INSUFFICIENT_DATA</code>. Primary financial gate for Cambrian deal viability.</td></tr>
+      <tr><td><code>required_rate_for_qualification</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>Minimum blended water rate ($/gal) needed to meet Riverbank CapEx threshold at this facility's flow. Gap analysis.</td></tr>
+      <tr><td><code>required_rate_kgal</code></td><td><span class="badge-inline badge-purple">DOUBLE</span></td><td>Same as above but in $/kgal (more intuitive for BDRs). "The market rate needs to be $15/kgal."</td></tr>
+      <tr><td><code>capex_display_note</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Human-readable CapEx summary for BDR use. Ready-to-read note in CRM: "$8.5M revenue potential."</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 18. Scoring -->
+  <h3>18. Scoring (7 columns)</h3>
+  <table>
+    <thead><tr><th>Column</th><th>Type</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td><code>lead_score_0_100</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Composite lead score (0-100) combining flow, industry, contaminant, compliance, market, regulatory, and bonus points. Primary sort/prioritization metric.</td></tr>
+      <tr><td><code>gate</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Sales readiness gate: 1 (ready to pitch), 2 (qualified lead), 3 (needs flow verification), 4 (below threshold). Routes leads to appropriate outreach cadence.</td></tr>
+      <tr><td><code>contaminant_score</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Normalized contaminant sub-score (0-100) based on DMR parameter complexity. Ranks treatment need intensity.</td></tr>
+      <tr><td><code>regulatory_score</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Normalized regulatory pressure sub-score (0-100) based on state stringency and water stress. Ranks external regulatory pressure.</td></tr>
+      <tr><td><code>sustainability_score</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Normalized sustainability sub-score (0-100) based on TRI source reduction and enrichment signals. Ranks facility openness to change.</td></tr>
+      <tr><td><code>upgrade_opportunity_score</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Same as lead_score_0_100 (composite); represents overall upgrade opportunity. Supabase dashboard compatibility.</td></tr>
+      <tr><td><code>upgrade_interest_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if the facility shows active upgrade interest (SNC, enforcement, permit expiry, or score &ge;50). Quick filter for marketing automation.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 19. Metadata -->
+  <h3>19. Metadata (5 columns)</h3>
+  <table>
+    <thead><tr><th>Column</th><th>Type</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td><code>data_enrichment_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if this facility was enriched beyond base EPA data (TRI, FRS National, enrichment CSVs). Data richness indicator.</td></tr>
+      <tr><td><code>data_enrichment_source</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Provenance tag: <code>TRI_MERGED</code>, <code>TRI_ONLY_FRS_BRIDGE</code>, <code>ENRICHMENT_MERGED</code>, etc. Tracks how the lead entered the pipeline.</td></tr>
+      <tr><td><code>data_quality_tier</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Overall data quality grade: A (NPDES+flow+active), B (NPDES+some flow), C (minimal data). Prioritize Tier A leads for outreach.</td></tr>
+      <tr><td><code>facility_liveness_signal</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td>Binary: 1 if the facility shows signs of active operations (FRS active status, recent inspections, DMR filings, violations). Filters out defunct facilities.</td></tr>
+      <tr><td><code>hubspot_matched_deal</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>HubSpot deal name if this facility matched an existing deal record. Prevents duplicate outreach to facilities already in sales pipeline.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 20. Summary -->
+  <h3>20. Summary (4 columns)</h3>
+  <table>
+    <thead><tr><th>Column</th><th>Type</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td><code>cambrian_fit_summary</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Rich, multi-paragraph natural-language summary covering industry, compliance, water stress, contact, and score. Drop into HubSpot notes or email; BDR call preparation in 30 seconds.</td></tr>
+      <tr><td><code>territory</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Assigned sales territory based on state_code (T1_west through T6_unassigned). CRM territory routing and rep assignment.</td></tr>
+      <tr><td><code>territory_rep</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Alias for deal_owner; the assigned sales rep for this territory. Quick reference for which rep owns this lead.</td></tr>
+      <tr><td><code>deal_owner</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td>Sales rep assigned based on territory. Derived from TERRITORIES dict. CRM deal owner field; auto-populates HubSpot deal assignment.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 21. V11 New -->
+  <h3>21. V11 New (6 columns)</h3>
+  <table>
+    <thead><tr><th>Column</th><th>Type</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td><code>mr_rate_source</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td><span class="badge-inline badge-blue">V11</span> Source identifier for the city-matched market rate data. Data provenance for rate figures; audit trail for pricing assumptions.</td></tr>
+      <tr><td><code>hubspot_active_deal_flag</code></td><td><span class="badge-inline badge-green">INTEGER</span></td><td><span class="badge-inline badge-blue">V11</span> Binary: 1 if this facility matches an active HubSpot deal (non-lost stage). Exclude from cold outreach; route to existing deal owner.</td></tr>
+      <tr><td><code>hubspot_deal_name</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td><span class="badge-inline badge-blue">V11</span> Matched HubSpot deal name from all-deals.csv CRM export. Cross-reference for BDR to check existing pipeline status.</td></tr>
+      <tr><td><code>hubspot_deal_stage</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td><span class="badge-inline badge-blue">V11</span> Current HubSpot deal stage for the matched deal. Context: is this early-stage or deep in pipeline?</td></tr>
+      <tr><td><code>hubspot_deal_owner</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td><span class="badge-inline badge-blue">V11</span> HubSpot deal owner name for the matched deal. Route inquiries to the correct rep; prevent stepping on toes.</td></tr>
+      <tr><td><code>bdr_call_script</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td><span class="badge-inline badge-blue">V11</span> Sandler-methodology-driven natural language call script with facility context, signal summary, and discovery questions. Copy-paste cold call opener; saves 5-10 min BDR prep per call.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 22. V12 New -->
+  <h3>22. V12 New (16 columns)</h3>
+  <table>
+    <thead><tr><th>Column</th><th>Type</th><th>Definition</th></tr></thead>
+    <tbody>
+      <tr><td><code>frs_naics_code</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td><span class="badge-inline badge-blue">V12</span> NAICS code from FRS NATIONAL_NAICS_FILE registry, ranked by program system priority. Backfills 472K+ missing NAICS codes.</td></tr>
+      <tr><td><code>frs_naics_desc</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td><span class="badge-inline badge-blue">V12</span> NAICS description corresponding to frs_naics_code. Human-readable industry tag from FRS.</td></tr>
+      <tr><td><code>frs_sic_code</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td><span class="badge-inline badge-blue">V12</span> SIC code from FRS NATIONAL_SIC_FILE registry, ranked by program system priority. Backfills missing SIC codes.</td></tr>
+      <tr><td><code>frs_sic_desc</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td><span class="badge-inline badge-blue">V12</span> SIC description corresponding to frs_sic_code. Readable SIC label for BDR context.</td></tr>
+      <tr><td><code>frs_mailing_address</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td><span class="badge-inline badge-blue">V12</span> Official mailing address from FRS NATIONAL_MAILING_ADDRESS_FILE. Ranked by affiliation type (OPERATOR &gt; OWNER &gt; ENVIRONMENTAL INTEREST). Mail campaigns, invoice address, corporate HQ correlation.</td></tr>
+      <tr><td><code>frs_mailing_city</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td><span class="badge-inline badge-blue">V12</span> Mailing address city from FRS. May differ from facility city (e.g., HQ city); useful for corporate outreach.</td></tr>
+      <tr><td><code>frs_mailing_state</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td><span class="badge-inline badge-blue">V12</span> Mailing address state from FRS. Cross-reference: mailing state != facility state implies corporate HQ elsewhere.</td></tr>
+      <tr><td><code>frs_mailing_zip</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td><span class="badge-inline badge-blue">V12</span> Mailing address ZIP from FRS. Direct mail targeting; corporate office geo-mapping.</td></tr>
+      <tr><td><code>case_fed_penalty_amt</code></td><td><span class="badge-inline badge-orange">DECIMAL</span></td><td><span class="badge-inline badge-blue">V12</span> Aggregated federal penalty amount (USD) from CASE_ENFORCEMENT_CONCLUSION_DOLLARS. Isolates federal vs. state financial exposure.</td></tr>
+      <tr><td><code>case_state_penalty_amt</code></td><td><span class="badge-inline badge-orange">DECIMAL</span></td><td><span class="badge-inline badge-blue">V12</span> Aggregated state/local penalty amount (USD) from enforcement conclusion dollars. State-level penalty burden.</td></tr>
+      <tr><td><code>case_sep_cost_amt</code></td><td><span class="badge-inline badge-orange">DECIMAL</span></td><td><span class="badge-inline badge-blue">V12</span> Aggregated Supplemental Environmental Project (SEP) cost (USD). SEP obligations often fund treatment upgrades; Cambrian can be the SEP solution.</td></tr>
+      <tr><td><code>case_compliance_cost_amt</code></td><td><span class="badge-inline badge-orange">DECIMAL</span></td><td><span class="badge-inline badge-blue">V12</span> Aggregated compliance action cost (USD) mandated by enforcement conclusions. Direct upgrade budget already allocated; strongest financial conversion signal.</td></tr>
+      <tr><td><code>frs_alternative_names</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td><span class="badge-inline badge-blue">V12</span> Pipe-delimited alternative/DBA names from FRS NATIONAL_ALTERNATIVE_NAME_FILE. HubSpot fuzzy matching; catches facilities operating under trade names.</td></tr>
+      <tr><td><code>frs_interest_types</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td><span class="badge-inline badge-blue">V12</span> Comma-separated EPA program interest types from FRS NATIONAL_SINGLE. Multi-program regulatory profile; RCRA + NPDES = heavier regulatory burden.</td></tr>
+      <tr><td><code>frs_pgm_sys_acrnms</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td><span class="badge-inline badge-blue">V12</span> Comma-separated EPA program system acronyms from FRS NATIONAL_SINGLE. Shows which EPA programs regulate this facility.</td></tr>
+      <tr><td><code>us_mexico_border_ind</code></td><td><span class="badge-inline badge-blue">VARCHAR</span></td><td><span class="badge-inline badge-blue">V12</span> US-Mexico border indicator from FRS NATIONAL_SINGLE: Y/N. Border-region facilities face unique binational water regulations and BECC oversight.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Version History -->
   <h3>Version History</h3>
   <table>
     <thead><tr><th>Version</th><th>Columns</th><th>Key Additions</th></tr></thead>
